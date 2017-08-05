@@ -1,0 +1,8 @@
+#!/bin/bash
+#Create a short url using tinyurl.com (similar to bit.ly)
+[[ -z $1 ]] && print "Usage: tinyurl <url>" && return 1
+
+url=$(curl -s "https://tinyurl.com/create.php?url=$(urlencode "$1")" | awk -F '"' '/id="copyinfo"/ {print $4}')
+echo "$url" | xclip -in -selection clipboard
+echo " >> generated link: $url $(tput setaf 238)(copied to the clipboard)$(tput setaf 0)"
+

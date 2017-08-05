@@ -1,0 +1,3 @@
+#!/bin/sh
+# Usage: column <n> [filename]
+cut -d ' ' -f$1 $2 | sed '/^$/d'

@@ -1,0 +1,61 @@
+#!/bin/sh
+
+lang=en
+uri=$2
+
+case "$(downcase "$1")" in
+  # [GENERAL]
+  home)           window=home;;
+  video*)         window=videos;;
+  music*)         window=music;;
+  picture*|image*)window=pictures;;
+  favo*rite*)     window=favourites;;
+  weather)        window=weather;;
+  program*|app*)  window=programs;;
+  setting*)       window=settings;;
+
+  # [ADDONS]
+  exo|exodus)     window=videos; uri=plugin.video.exodus;;
+  1chan*)         window=videos; uri=plugin.video.1channel;;
+  dreamfilm|se|sw)window=videos; uri=plugin.video.dreamfilm;;
+  vstream|fr)     window=videos; uri=plugin.video.vstream;;
+  ru)             window=videos; uri=;;
+  twitch|game*)   window=videos; uri=plugin.video.twitch;;
+  svt*)           window=videos; uri=plugin.video.svtplay;;
+  ted*)           window=videos; uri=plugin.video.ted.talks;;
+  porn|pron)      window=videos; uri=plugin.video.uwc;;
+  youtube)        window=videos; uri=plugin.video.youtube;;
+
+  # [ADDONS: extra]
+  movie*)
+    window=videos
+    case "$lang" in
+      en*|us)     uri="plugin.video.exodus/?action=movieNavigator";;
+      fr*)        uri="plugin.video.vstream/?site=cHome&function=callpluging&title=Movies+%5BCOLOR+lightcoral%5D%28Genre%29%5B%2FCOLOR%5D&siteUrl=MOVIE_GENRES&sFav=callpluging";;
+      sv*|sw*|se) uri="plugin.video.dreamfilm/?action=list_movie_genres&page=0";;
+      ru*)        uri="";;
+      *)          uri="plugin.video.exodus/?action=movieNavigator";;
+    esac;;
+
+  tvs*|serie*|*show*)
+    window=videos
+    case "$lang" in
+      en*|us)     uri="plugin.video.exodus/?action=tvshows&url=traktcollection";;
+      fr*)        uri="plugin.video.vstream/?site=cHome&function=showSeries&title=Tvshow&siteUrl=http%3A%2F%2Fvenom&sFav=showSeries";;
+      sv*|sw*|se) uri="plugin.video.dreamfilm/?action=list_serie_genres&page=0";;
+      ru*)        uri="";;
+      *)          uri="plugin.video.exodus/?action=tvshows&url=traktcollection";;
+    esac;;
+
+  # [OTHER]
+  screensaver)    window=screensaver;;
+  *)
+    window=$1;
+    uri=$2;
+    ;;
+esac
+
+[ -n "$uri" ] && params="parameters=[\"plugin://$uri\"]"
+
+tvremote.send GUI.ActivateWindow window="$window" $params
+

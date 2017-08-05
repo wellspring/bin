@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Terminate already running bar instances (and wait for them to shutdown)
+killall -q polybar
+while pgrep -x polybar >/dev/null; do sleep 1; done
+
+# Launch polybars...
+polybar top &
+polybar bottom &
+

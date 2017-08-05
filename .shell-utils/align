@@ -1,0 +1,4 @@
+#!/bin/sh
+default_delimiter=$'\t'
+delimiter="${1:-$default_delimiter}"; shift
+/usr/bin/column -ts "$delimiter" -o "$delimiter" "$@"

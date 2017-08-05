@@ -1,0 +1,3 @@
+#!/bin/sh
+# Usage: first-column [filename]
+awk "{print \$1}" "$@"

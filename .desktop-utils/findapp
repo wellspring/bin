@@ -1,0 +1,4 @@
+#!/bin/sh
+# Find existing .desktop applications with that name
+find {~/.local,/usr/local,/usr}/share/applications/ -iname "*$**" 2>/dev/null
+exit 0

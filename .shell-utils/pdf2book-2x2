@@ -1,0 +1,38 @@
+#!/bin/sh
+# Usage: pdf2book-2x2 <pdf...>
+
+#--
+#NOTE: With this setup, just print RECTO normally, then move the printed paper back to the paper tray without rotating it / changing anything, and print VERSO normally.
+#--
+
+pagesperpaper=4 #2x2
+
+for pdf
+do
+  echo " >> $pdf"
+
+  # Pre-compute the order of the pages...
+  echo "  [+] Preparing..."
+  pdf_=${pdf%%.pdf}
+  pages=$(pages-in "$pdf" | column 1)
+  n=$(ruby -e "p ($pages/$pagesperpaper/2.0).round*2")
+  order_recto=$(ruby -e "puts $pagesperpaper.times.map{|i| (1..$n).to_a.keep_if{|x|x%2==1}.map{|x|r=x+$n*i; (r<=$pages) ? \"A#{r}\" : 'B1'} }.transpose")
+  order_verso=$(ruby -e "puts $pagesperpaper.times.map{|i| (1..$n).to_a.keep_if{|x|x%2==0}.map{|x|r=x+16*i; r<=$pages ? \"A#{r}\" : 'B1'} }.transpose.flatten.each_slice(2).map(&:reverse)")
+  #order_verso=$(ruby -e "puts $pagesperpaper.times.map{|i| (1..$n).to_a.keep_if{|x|x%2==0}.map{|x|r=x+16*i; \"A#{r}\" if r<=$pages} }.transpose.flatten.each_slice(2).map{|x|x.compact.reverse.concat(['B1']).take(2)}")
+
+  # Re-order the pages...
+  echo "  [+] Re-ordering the pages..."
+  pdftk A="$pdf" B=blank.pdf cat $order_recto output "${pdf_}-odd.pdf"
+  pdftk A="$pdf" B=blank.pdf cat $order_verso output "${pdf_}-even.pdf"
+
+  # Generate the 2x2 version... (book to cut)
+  echo "  [+] Generating 2x2 pages..."
+  pdfjam --quiet --nup '2x2' --a4paper --no-landscape --frame true --outfile "${pdf_}-RECTO.pdf" "${pdf_}-odd.pdf"
+  pdfjam --quiet --nup '2x2' --a4paper --no-landscape --frame true --outfile "${pdf_}-VERSO-pre.pdf" "${pdf_}-even.pdf"
+  pdftk "${pdf_}-VERSO-pre.pdf" cat end-1south output "${pdf_}-VERSO.pdf"
+
+  # Cleanup
+  rm "${pdf_}-odd.pdf" "${pdf_}-even.pdf" "${pdf_}-VERSO-pre.pdf"
+done
+
+

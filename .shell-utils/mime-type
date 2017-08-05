@@ -1,0 +1,37 @@
+#!/bin/sh
+# Get the mime-type of the specified file or extension.
+
+# -- Check arguments...
+if [ -z "$1" ]; then
+  echo "  Usage: $0 <file|extension|scheme|mimetype>"
+  echo "    e.g. $0 application/pdf"
+  echo "    e.g. $0 example.pdf"
+  echo "    e.g. $0 .pdf"
+  echo "    e.g. $0 pdf"
+  echo "    e.g. $0 irc://"
+  exit 127
+fi
+
+# -- For each argument...
+for arg
+do
+  # -- [FILE] Determine the mime type of the file.
+  file=${arg#file://}
+  if [ -e "$file" ]; then
+    file --brief --mime-type "$file" 2>/dev/null;
+
+  # -- [SCHEME] Then refer to the scheme-handler.
+  elif [[ "$arg" =~ :// ]]; then
+    echo "x-scheme-handler/$arg" | grep -o '^[^:]*'
+
+  # -- [MIME-TYPE] Do nothing.
+  elif [[ "$arg" =~ "^[^/]/[^/]*$" ]]; then
+    echo "$arg"
+
+  # -- [EXTENSION] Remove leading dots, and find which mimetype it corresponds to.
+  else
+    awk "/\s.*\s$(echo "$arg" | grep -o '[^.].*')\s?/ { print \$1 }" /etc/mime.types;
+  fi
+done
+
+

@@ -1,0 +1,26 @@
+#!/bin/bash
+# Set the title of the terminal.
+#   Usage: title <title> [hostname] [max-length]
+#   Env: set TITLE_PREFIX and TITLE_SUFFIX to set the text around the title, and TITLE_MAXLENGTH to trim it.
+
+title="$1"
+host=${2:-$HOST}
+max_length=${3:-${TITLE_MAXLENGTH:-100}}
+
+# -- Fix the argument: protect against %X and \X and non-printable char, join lines, and truncate command.
+title=$TITLE_PREFIX$(echo -n "$title" | sed -E 's/[^[:print:]]//g; s/[\\%]/&&/g; s/^(.{'$max_length'}).+$/\1.../; q' 2>/dev/null)$TITLE_SUFFIX
+
+# -- Set the title...
+case $TERM in
+  screen*)
+    echo -en "\e]2;$title\a"         # terminal window title (seealso: \e]1; to set only the tab-title)
+    echo -en "\ek$title\e\\"         # screen/tmux title (in ^A")
+    echo -en "\e_$host\e\\"          # screen/tmux location
+    ;;
+  xterm*|rxvt*)
+    echo -en "\e]2;$title\a"         # terminal window title
+    ;;
+esac
+
+#function precmd() { title "" "" }
+#function preexec() { title "$1" "%m(%35<...<%~)" }

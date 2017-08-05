@@ -1,0 +1,51 @@
+#!/bin/bash
+# Extract the compressed files
+
+# -- Helper
+downcase() { tr '[:upper:]' '[:lower:]'; }
+
+# -- For each files in argument...
+for file
+do
+    # -- If the file exists (and it is a regular file)...
+    if [ -f "$file" ] ; then
+        echo -e " >>> Extracting \e[34m$file\e[00m ..."
+
+        # -- Find the correct extension...
+        ext=$(file -izb "$file" | awk 'BEGIN{RS="[ =;]";FS="/"} /application\//{gsub(/x-|-compressed/,"",$2);printf "."$2}' | downcase)
+        [ -z "$ext" ] && ext=$(echo file | grep -o '\.[a-zA-Z0-9.]*$' | downcase)
+
+        # -- Uncompress...
+        case "$ext" in
+            .tar)                         tar -xvf "$file";;
+            .tar.gz|.tgz|.gtar)           tar -xvzf "$file";;
+            .tar.bz2|.tar.bzip2|.tbz2)    tar -xvjf "$file";;
+            .tar.xz|.txz)                 tar -xvJf "$file";;
+            .tar.z|.tz)                   tar -xvZf "$file";;
+            .tar.lzma|.tlz)               tar --lzma -xvf "$file";;
+            .tar.lzop)                    tar --lzop -xvf "$file";;
+            .tar.lz)                      tar --lzip -xvf "$file";;
+            .zip)                         unzip "$file";;
+            .rar)                         unrar x "$file";;
+            .ace)                         unace x "$file";;
+            .7z)                          7z x "$file";;
+            .cpio)                        cpio -idv < "$file";;
+            .cab)                         cabextract "$file";;
+            .pax)                         pax -r < "$file";;
+            .java-archive)                jar x "$file";;
+            .vnd.debian.binary-package)   ar -x "$file";;
+
+            .gz)                          gunzip "$file";;
+            .bz2)                         bunzip2 "$file";;
+            .lzma)                        unlzma "$file";;
+            .z)                           uncompress "$file";;
+
+            *)  
+            echo -e "\e[31m   /!\\ Error: unknown extension '$ext' for '$file'.\e[00m"
+        ;;
+        esac
+    else
+        echo -e "\e[31m/!\\ Error: The file '$file' doesn't exist or is not a valid file.\e[00m"
+    fi
+done
+

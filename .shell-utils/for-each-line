@@ -1,0 +1,3 @@
+#!/bin/sh
+# Execute a command for each non-empty lines piped to it...
+cat -s | xargs -L1 "$@"

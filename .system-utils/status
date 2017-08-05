@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "host ........ $(hostname)"
+echo "os .......... $(uname -sr)"
+echo "ip (lan) .... $(lanip) (gateway: $(gateway))"
+echo "ip (net) .... $(netip)"
+echo "processes ... $(ps eax | wc -l) running"
+echo "ports open .. $(netstat -l4tpn 2>/dev/null | awk '$4!~/^127|::1/ && /^tcp/' | wc -l)"
+echo "shell ....... $($SHELL --version)"
+echo "uptime ...... $(uptime | grep -o 'up [^,]*' | sed 's/up //')"
+

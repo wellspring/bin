@@ -1,0 +1,2 @@
+#!/bin/sh
+tvremote.ls "plugin://plugin.audio.radio_de/stations/search/${*// /_}"

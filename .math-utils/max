@@ -1,0 +1,4 @@
+#!/bin/sh
+# Get the maximum number in the Nth column of the file (default: 1st column).
+# Usage: max [column] [file]
+cat $2 | awk "{if(\$${1:-1}>n)n=\$${1:-1}} END{print n}"

@@ -1,0 +1,3 @@
+#!/bin/sh
+# List all the docker containers (even the non-running ones!)
+docker ps -a "$@";

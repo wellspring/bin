@@ -1,0 +1,18 @@
+#!/bin/sh
+# echo the first command/app that exists
+# Usage: first <app-type> <apps...>
+#   e.g. first 'editor' vim vi nano emacs ed ...
+
+apptype=$1; shift
+a=a$(echo "$apptype" | awk '/^[aeiouy]/{printf "n";exit}')
+
+# Try to find the first command/app that exists...
+for app in "$@"; do
+  command -v "$app" && exit 0
+done
+
+# Handle error...
+alert-desktop-i3 Error "Could not find $a $apptype. Please install one." &
+fail "find $a $apptype. Please install one."
+exit 1
+

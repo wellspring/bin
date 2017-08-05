@@ -1,0 +1,5 @@
+#!/bin/sh
+# Save the last command in the file `cmd_history.txt` (in the current directory)
+OUT=cmd_history.txt
+[ -e "$OUT" ] || echo -e "#!$SHELL\n" >> $OUT
+history-get "$1" "(save|$OUT)" | tee -a $OUT

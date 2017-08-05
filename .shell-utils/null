@@ -1,0 +1,3 @@
+#!/bin/sh
+#tr -cd ''
+cat &>/dev/null

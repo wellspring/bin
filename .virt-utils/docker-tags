@@ -1,0 +1,2 @@
+#!/bin/sh
+curl -sS "https://registry.hub.docker.com/v1/repositories/$*/tags" | jq -r '.[].name' | sort

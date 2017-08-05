@@ -1,0 +1,9 @@
+#!/bin/sh
+todolist=$(backfind TODO)
+[ -n "$todolist" ] && edit "$todolist"
+
+#TODO: todo [task]       // or editor!
+#TODO: workon [task]     // or menu!
+#TODO: done
+
+#TODO: TODO_CMD file   (command to execute that list the tasks to do)

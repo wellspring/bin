@@ -1,0 +1,4 @@
+#!/bin/sh
+# Reverse `ln` (find all files pointing to the specified file in the current directory)
+#   Usage: rln <originalfile> [dir]
+find -L ${2:-.} -samefile ${1:?missing file}

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+notitle='> > >      E N J O Y I N G      S I L E N C E      < < <'
+
+icon=$(playerctl status 2>/dev/null | sed 's/Paused//;s/Playing//;s/...*/[&]/')
+artist=$(playerctl metadata artist 2>/dev/null)
+title=$(playerctl metadata title 2>/dev/null)
+
+[ -n "$title" ] && echo "[[   $icon   $artist  —  $title.   ]]" || echo "$notitle"
+

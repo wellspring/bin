@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/bin/highlight --out-format=ansi "$@";

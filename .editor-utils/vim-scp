@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]; then
+    echo "usage : $0 <user@host> <path>"
+    exit 1
+fi
+
+echo "opening ssh tunnel.."
+ssh $1 -f -N -o ControlMaster=auto -o ControlPath=/tmp/%r@%h:%p || exit $?
+SSH_PID=$!
+
+echo "ssh tunnel active, opening vim.."
+vim scp://$1/$2
+
+echo "closing ssh tunnel.."
+kill -9 $SSH_PID
+
+# vim:ft=sh

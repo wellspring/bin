@@ -1,0 +1,3 @@
+#!/bin/sh
+# (insensitive-case grep)
+grep -i "$@";

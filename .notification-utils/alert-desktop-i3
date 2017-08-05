@@ -1,0 +1,8 @@
+#!/bin/sh
+# Usage: alert-i3 <title> <msg>
+
+title=$1; shift
+message=$*
+
+has i3-nagbar && i3-nagbar -m "$title: $message" &>/dev/null
+

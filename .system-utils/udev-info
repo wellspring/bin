@@ -1,0 +1,4 @@
+#!/bin/sh
+#   Usage: udev-info <dev>
+#     e.g. udev-info /dev/sda1
+RUN_AS_ROOT udevadm info -a -p $(udevadm info -q path -n "$1")

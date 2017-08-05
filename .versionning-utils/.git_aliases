@@ -1,0 +1,37 @@
+#!/bin/sh
+
+cmd=$(basename "$0")
+
+case "$cmd" in
+  g)                  git "$@";;
+  ga)                 git add "$@";;
+  gae)                git add --edit "$@";;
+  gap)                git add --patch "$@";;
+  gpa)                git add --patch "$@";;
+  gia)                git add -i "$@";;
+  gc)                 git commit "$@";;
+  gca)                git commit --all "$@";;
+  gcm)                git commit --message="$*";;
+  gj)                 git checkout "$@";;
+  gco)                git checkout "$@";;
+  gjc)                git checkout -b "$@";;
+  glf)                git --no-pager log --pretty=format:'%Creset%C(red bold)[%ad] %C(blue bold)%h %Creset%C(magenta bold)%d %Creset%s %C(green bold)(%an)%Creset' --follow -- "$@";;
+  gll)                git slog "$@";;
+  gm)                 git merge --no-ff "$@";;
+  gmv)                git mv "$@";;
+  grm)                git rm "$@";;
+  gss)                git show "$@";;
+  gr)                 git ready "$@";;
+  gt)                 git tag "$@";;
+  gg)                 git grep "$@";;
+  gd)                 git diff "$@";;
+  gs)                 git status "$@";;
+  gcl)                git clone --depth=1 "$@";;
+
+  amend)            	git commit --allow-empty --amend "$@";;
+  m)                  git checkout "$@" master;;
+  
+  *)
+    fail "execute git alias '$1'"
+esac
+

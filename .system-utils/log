@@ -1,0 +1,10 @@
+#!/bin/sh
+if has journalctl; then
+  if [ -n "$1" ]; then
+    RUN_AS_ROOT journalctl --reverse --catalog --all -u "$@"
+  else
+    RUN_AS_ROOT journalctl --reverse --catalog --all
+  fi
+else
+  fail read logs: TODO.
+fi

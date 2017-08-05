@@ -1,0 +1,64 @@
+#!/bin/sh
+# Copy text to to the clipboard.
+#  Usage: copy [-<N>|url|file|cmd|text]
+#  Usage: cmd | copy
+#
+# Examples
+# ========
+#$ copy hello world                        # => puts text in the clipboard
+#$ date | copy                             # => puts the current date in the clipboard (via piped output)
+#$ copy ~/.bash_profile ~/.bashrc          # => puts the concatenated contents the files in the clipboard
+#$ copy **/*.{md,markdown,mmd,mdown}       # => copies text of all the Markdown files in the current directory
+#$ copy curl http://example.com/file.txt   # => puts the "answered" bookmarklet on the clipboard (equivalent to `curl http://example.com/file.txt | copy`)
+#$ copy pwd                                # => puts the current path in the clipboard
+#$ copy !!                                 # => puts the results of the previous command in the clipboard
+#$ copy                                    # => puts the last command typed in the clipboard
+#$ copy -3                                 # => puts the last 3 commands typed in the clipboard
+
+#-------------------------------------------------------------------------------
+# -- Helpers
+ispiped(){ test \! -t 0; }
+isempty(){ test -z "$1"; }
+iscmd(){ type "$1" &>/dev/null; }
+isurl(){ echo "$1" | sed 's_^\\\\_smb://_' | grep -F '://' &>/dev/null; }
+isfile(){ test -f "$1" && test \! -d "$1"; }
+ishistoryref() { echo "$1" | grep '^-[0-9]\+$' &>/dev/null; }
+
+# -- Find the command to use
+if iscmd 'xclip'; then             CMD="xclip -selection clipboard -in" # (on linux/bsd/unix)
+elif iscmd 'xsel'; then            CMD="xsel --clipboard --input"       # (on linux/bsd/unix)
+elif iscmd 'pbcopy'; then          CMD="pbcopy"                         # (on Mac OS X)
+elif isfile '/dev/clipboard'; then CMD="..."                            # (on Microsoft Windows, with cygwin)
+else
+  echo "Error: No clipboard command found. (please install 'xclip' or 'xsel' on linux/unix)" >&2
+  exit 1
+fi
+
+# -- Select the action to do from the context (the stdin and the arguments)
+if ispiped; then
+  echo "Copying STDIN (input from pipe) to the clipboard..."
+  $CMD "$@"
+
+elif isempty "$1"; then
+  echo "Copying the last command to the clipboard..."
+  history-get 1 copy | $CMD
+
+elif ishistoryref "$1"; then
+  n=${1/-}
+  echo "Copying the last $n command to the clipboard..."
+  history-get "$n" copy | $CMD
+
+elif isurl "$1"; then
+  echo "Copying the content of $* to the clipboard..."
+
+elif isfile "$1"; then
+  echo "Copying the content of $* to the clipboard..."
+
+elif iscmd "$1"; then
+  echo "Copying the result of the command \`$*\` to the clipboard..."
+
+else
+  echo "Copying text \"$*\" to the clipboard..."
+  echo -e -- "$@" | $CMD
+fi
+

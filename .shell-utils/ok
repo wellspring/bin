@@ -1,0 +1,2 @@
+#!/bin/sh
+echo -e "\e[32m  ✓ Ok.\e[0m"

@@ -1,0 +1,11 @@
+#!/bin/sh
+# Convert a string to its hexadecimal representation...
+#   Usage: binencode <str>
+#   Usage: binencode <<< <str>
+#     e.g. binencode ABCD          # outputs: 41424344
+
+if has xxd; then  pipe "$@" | xxd -p | tr -d '\n'
+elif has od; then pipe "$@" | od -A n -t x1 -v | tr -d ' \n'
+else fail hash: Please install coreutils or vim.;  exit 1
+fi
+

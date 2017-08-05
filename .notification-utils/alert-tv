@@ -1,0 +1,21 @@
+#!/bin/sh
+
+KODI_URL=tv:8080
+
+# -- Check/Set the arguments...
+if [ $# -lt 2 ]; then
+    echo "  Usage: $0 <title> <message>"
+    exit 1
+fi
+title=${1//\"/\'};shift
+message=${*//\"/\'}
+
+# -- Display the message on the tv (Kodi/XBMC)
+curl --header "Content-Type: application/json" \
+     --data "{\"jsonrpc\": \"2.0\", \"id\": 1,
+      \"method\": \"GUI.ShowNotification\",
+      \"params\": {
+        \"title\":   \"$title\",
+        \"message\": \"$message\"
+      }}" http://$KODI_URL/jsonrpc
+

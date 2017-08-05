@@ -1,0 +1,5 @@
+#!/bin/sh
+# Group data by extension.
+#   Usage: cat data.tsv | group-by [column] [separator]
+#     e.g. cat data.tsv | group-by 5
+group-by '([^.]*)$' "$@"

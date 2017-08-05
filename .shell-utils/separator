@@ -1,0 +1,15 @@
+#!/bin/sh
+# Usage: separator [char]
+cmd=$(basename "$0")
+
+if [ -n "$1" ]; then
+  char=$1
+elif [ "$cmd" != separator ]; then
+  char=$cmd
+else
+  char="-"
+fi
+
+char=$(echo "$char" | head -c 1)
+
+repeat "$char"

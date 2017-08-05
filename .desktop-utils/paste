@@ -1,0 +1,12 @@
+#!/bin/sh
+# Paste the content of the clipboard.
+
+if has 'xclip'; then               xclip -selection clipboard -out # (on linux/bsd/unix)
+elif has 'xsel'; then              xsel --clipboard --output       # (on linux/bsd/unix)
+elif has 'pbpaste'; then           pbpaste                         # (on Mac OS X)
+elif [ -f '/dev/clipboard' ]; then cat /dev/clipboard              # (on Microsoft Windows, with cygwin)
+else
+  echo "Error: No clipboard command found. (please install 'xclip' or 'xsel' on linux/unix)" >&2
+  exit 1
+fi
+

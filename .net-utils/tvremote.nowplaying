@@ -1,0 +1,3 @@
+#!/bin/sh
+read playerid mediatype <<<$(tvremote.send Player.GetActivePlayers | jq -r '.result[]|.playerid,.type' | tr '\n' ' ')
+tvremote.send Player.GetItem playerid=$playerid | jq -r .result.item.label

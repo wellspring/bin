@@ -1,0 +1,17 @@
+#!/bin/sh
+# Print the content of the specified file(s) (and append the name of the file before).
+#   Usage: cat+ <file...>
+
+name() { (n=$(((longest_arg-${#1})/2+10)); repeat - x $n; echo -n " [ $1 ] "; repeat - x $n; echo) | grey; }
+end()  { name "/// END ///"; echo; }
+
+# Find the longest filename argument
+longest_arg=$((for file; do echo ${#file}; done) | max)
+
+# For each filename passed in argument, print it, and then it's content.
+for file
+do
+  name "$file"
+  cat "$file"
+  end
+done

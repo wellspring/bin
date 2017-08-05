@@ -1,0 +1,15 @@
+#!/bin/bash
+# diff 2 config files
+
+config1=$1
+config2=$2
+shift 2
+options=$@
+
+has colordiff && diff=colordiff || diff=diff
+
+$diff -u --ignore-case --expand-tabs --tabsize=4 --minimal --text $options \
+  <(sort "$config1" | grep -v '^#' | grep -v '^[ \t]*$') \
+  <(sort "$config2" | grep -v '^#' | grep -v '^[ \t]*$') \
+  | grep -v '/dev/fd/' | grep -v @@
+

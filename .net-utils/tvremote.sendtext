@@ -1,0 +1,2 @@
+#!/bin/sh
+tvremote.send Input.SendText text="$*" done=true

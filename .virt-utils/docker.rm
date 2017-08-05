@@ -1,0 +1,4 @@
+#!/bin/sh
+# Remove one or more docker container.
+docker rm "$@";
+

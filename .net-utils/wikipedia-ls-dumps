@@ -1,0 +1,29 @@
+#!/bin/sh
+# List wikipedia dumps.
+#   Usage: wikipedia-ls-dumps [lang] [source] [date]
+#     e.g. wikipedia-ls-dumps
+#     e.g. wikipedia-ls-dumps en
+#     e.g. wikipedia-ls-dumps en wiki
+#     e.g. wikipedia-ls-dumps ru wiktionary
+#     e.g. wikipedia-ls-dumps fr wikiquote 20170701
+
+if [ -z "$1" ]; then
+
+  # -- List the sources/langs...
+  links https://dumps.wikimedia.org/backup-index.html \
+    | awk -F/+ '/[0-9]$/{print gensub(/^(.{2,}?)(wik.*)/,"\\2 \\1","g",$3)}' \
+    | sort -u \
+    | compact-group-by
+
+else
+
+  # -- List the files available for download...
+  lang=${1:-en}
+  name=${2:-wiki}
+  date=${3:-latest}
+  ls.indexof.by-size "https://dumps.wikimedia.org/${lang}${name}/${date}/" \
+    | awk '$1 !~ /[0-9]\S|\.xml$/' \
+    | group-by-extension
+
+fi
+

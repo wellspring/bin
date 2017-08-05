@@ -1,0 +1,4 @@
+#!/bin/sh
+# Get the average number of the Nth column of the file (default: 1st column).
+# Usage: avg [column] [file]
+cat $2 | awk "BEGIN{n=0} {n=n+\$${1:-1}} END{print n/NR}"

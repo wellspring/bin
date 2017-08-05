@@ -1,0 +1,24 @@
+#!/bin/sh
+# Register the specified service to start at boot time.
+#   Usage: bootadd <service...>
+#     e.g. bootadd nginx samba
+
+# Check which service command exist on the system...
+for x in systemctl rc-update update-rc.d; do
+  if has $x; then
+    cmd=$x
+    break
+  fi
+done
+
+# For each service name passed in argument...
+for service
+do
+  case "$cmd" in
+    systemctl)    RUN_AS_ROOT systemctl enable $service;;      # (e.g. archlinux)
+    update-rc.d)  RUN_AS_ROOT update-rc.d $service defaults;;  # (e.g. debian)
+    rc-update)    RUN_AS_ROOT rc-update add $service default;; # (e.g. gentoo)
+    *)            fail add service: "This Operating System is not supported by this script."
+  esac
+done
+

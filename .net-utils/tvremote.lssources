@@ -1,0 +1,2 @@
+#!/bin/sh
+tvremote.send Files.GetSources media=${1:-video}

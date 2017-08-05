@@ -1,0 +1,4 @@
+#!/bin/sh
+# Get the minimum number in the Nth column of the file (default: 1st column).
+# Usage: min [column] [file]
+cat $2 | awk "{if(!n||\$${1:-1}<n)n=\$${1:-1}} END{print n}"

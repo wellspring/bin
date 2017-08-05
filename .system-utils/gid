@@ -1,0 +1,3 @@
+#!/bin/bash
+# Usage: gid <group>
+awk -F: "\$1 == \"$1\" { print \$3 }" /etc/group

@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# ----- [ SETTINGS ] ----- #
+urgency=low     # low / normal / critical
+icon=terminal   # (icon to use if success)
+time=3000       # 3000ms (3 seconds)
+# ----- [ SETTINGS ] ----- #
+
+# -- Check/Set the arguments...
+if [ $# -lt 2 ]; then
+    echo "  Usage: $0 <title> <message>"
+    exit 1
+fi
+title=$1;shift
+message="$*"
+icon=$([ $? = 0 ] && echo $icon || echo error)
+
+# -- Display the message on the desktop
+if has notify-send; then
+  notify-send --expire-time="$time" --urgency="$urgency" --icon="$icon" "$title" "$message"# [ Linux ]
+elif has growlnotify; then
+  growlnotify -n "Terminal" -t "$title" -m "$message"                                      # [ OS X / Windows ]
+elif has terminal-notifier; then
+  terminal-notifier -appIcon "$icon" -title "$title" -message "$message" -sound Tink       # [ OS X ]
+else
+  fail notify: "no such command. Is it really a desktop machine?"
+fi
+
+
+# TODO: sound on linux? (e.g. use paplay/aplay/ossplay)

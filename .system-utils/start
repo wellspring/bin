@@ -1,0 +1,23 @@
+#!/bin/sh
+# Start the specified service.
+#   Usage: start <service...>
+#     e.g. start nginx samba
+
+# Check which service command exist on the system...
+for x in systemctl service; do
+  if has $x; then
+    cmd=$x
+    break
+  fi
+done
+
+# For each service name passed in argument...
+for service
+do
+  case "$cmd" in
+    systemctl) RUN_AS_ROOT systemctl start $service;;   # (e.g. archlinux)
+    service)   RUN_AS_ROOT service $service start;;     # (e.g. debian)
+    *)         RUN_AS_ROOT /etc/init.d/$service start;; # (e.g. gentoo)
+  esac
+done
+

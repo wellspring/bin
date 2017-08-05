@@ -1,0 +1,32 @@
+#!/bin/sh
+# Move window r
+
+MARGIN_TOP=42
+MARGIN_LEFT=10
+MARGIN_RIGHT=10
+MARGIN_BOTTOM=28
+
+# -- Get the window and screen size
+win_id=${2:-$(xdotool getwindowfocus)}
+read -r win_width win_height screen_width screen_height <<<$(xwininfo -id $win_id | awk -F '[-+ \t]+' '/^  Width/{width=$3} /^  Height/{height=$3} /^  Corner/{screen_width=$3+$7+width; screen_height=$4+$8+height} END{print width,height,screen_width,screen_height}')
+echo window:${win_width}x${win_height} -- screen:${screen_width}x${screen_height} >&2
+
+# -- Compute the coordinates
+case "${1:-middle}" in
+  top*left)      x=$((MARGIN_LEFT));                         y=$((MARGIN_TOP));;
+  top|up)        x=$((screen_width/2-win_width/2));          y=$((MARGIN_TOP));;
+  top*right)     x=$((screen_width-win_width-MARGIN_RIGHT)); y=$((MARGIN_TOP));;
+
+  left)          x=$((MARGIN_LEFT));                         y=$((screen_height/2-win_height/2));;
+  middle|center) x=$((screen_width/2-win_width/2));          y=$((screen_height/2-win_height/2));;
+  right)         x=$((screen_width-win_width-MARGIN_RIGHT)); y=$((screen_height/2-win_height/2));;
+
+  bottom*left)   x=$((MARGIN_LEFT));                         y=$((screen_height-win_height-MARGIN_BOTTOM));;
+  bottom|down)   x=$((screen_width/2-win_width/2));          y=$((screen_height-win_height-MARGIN_BOTTOM));;
+  bottom*right)  x=$((screen_width-win_width-MARGIN_RIGHT)); y=$((screen_height-win_height-MARGIN_BOTTOM));;
+esac
+
+# -- Move the window
+echo Moving foreground window to "x=$x" "y=$y" ... >&2
+xdotool windowmove "$win_id" "$x" "$y"
+

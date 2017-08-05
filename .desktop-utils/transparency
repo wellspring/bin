@@ -1,0 +1,6 @@
+#!/bin/sh
+case "$1" in
+  up)   transset -a --inc 0.01
+  down) transset -a --dec 0.01
+  *)    echo "Usage: transparency <up|down>"; exit 127;;
+esac

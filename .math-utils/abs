@@ -1,0 +1,4 @@
+#!/bin/sh
+# Return the absolute value of a number.
+echo "${1//-/}"
+#[ "$1" -lt 0 ] && echo $((-$1)) || echo "$1"

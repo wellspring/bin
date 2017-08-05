@@ -1,0 +1,29 @@
+#!/bin/bash
+is-blocked() { rfkill list | grep yes &>/dev/null; }
+
+case "$1" in
+  --help|--usage|usage|help|h|u|-u|-h)
+    echo "Usage: $0 [on|off|toggle]     # default: on"
+    echo "Usage: $0 status"
+    ;;
+
+  --status|status|s|-s)
+    is-blocked && echo "%{F#f00}||" || echo "%{F#555}"
+    is-blocked
+    ;;
+
+  --toggle|--switch|toggle|switch|t|-t)
+    if is-blocked; then rfkill unblock all; else rfkill block all; fi
+    ;;
+
+  --off|--disable|--no|--false|false|no|disable|off|d|-d)
+    rfkill unblock all
+    ;;
+
+  --on|--enable|--yes|--true|true|yes|enable|on|-e)
+    rfkill block all
+    ;;
+
+  *) rfkill block all;;
+esac
+

@@ -1,0 +1,34 @@
+#!/bin/sh
+# Usage: pdf2book <pdf...>
+
+CAN_SEW_THROUGH=8                      # the needle can go through 8 sheets of XX mg paper.
+PAPER_GROUP_BY=$((CAN_SEW_THROUGH/2))  # 4 sheets of paper will be sewed together.
+PAGES_GROUP_BY=$((CAN_SEW_THROUGH*2))  # 16-pdf pages will be printed in each group.
+SUFFIX=book                            # add '-book' before the extension
+
+# For each pdf file in argument...
+for pdf
+do
+  title=$(basename "$pdf" | sed -E 's/\.pdf//i; s/\[[^]]*\]//g; s/\([^)]*\)//g; s/\s+/ /; s/^\s*//; s/\s*$//')
+  echo "Preparing ebook '$title' for being printable..."
+  pdfjam --quiet --booklet 'false' --landscape --suffix "$SUFFIX" --signature $PAGES_GROUP_BY -- "$pdf" -
+  pdftk "${pdf%%.pdf}-book.pdf" cat 1-endeven output "${pdf%%.pdf}-book-recto.pdf"
+  pdftk "${pdf%%.pdf}-book.pdf" cat 1-endodd output "${pdf%%.pdf}-book-verso.pdf"
+  rm -f -- "${pdf%%.pdf}-book.pdf"
+done
+
+
+#---
+#(inside)
+# 10  --  11    <= middle pages
+#  8  --  13
+#  6  --  15
+#  4  --  17
+#  2  --  19
+#
+#(back)
+# 12  --  9
+# 14  --  7
+# 16  --  5
+# 18  --  3
+# 20  --  1      <= lastpage - firstpage

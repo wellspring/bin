@@ -1,0 +1,2 @@
+#!/bin/sh
+figlet -cw $COLUMNS -f block fail | colorize 1

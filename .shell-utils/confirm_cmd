@@ -1,0 +1,16 @@
+#!/bin/sh
+# Usage: confirm_cmd <command> [args]
+
+# Ask...
+echo -ne " *** Are sure you want to run \e[36m\`$*\`\e[0m? (type hostname to confirm) " >&2
+read -r answer
+echo ----
+
+# Exec... (or not)
+if [[ "$answer" == "$(hostname)" ]]; then
+  command "$@"
+else
+  echo -e "\e[31m✒ Cancelled.\e[0m\n" >&2
+  exit 1
+fi
+

@@ -1,0 +1,5 @@
+#!/bin/sh
+# Return the LCM (Lowest Common Multiple) of a number.
+g=$(gcd "$1" "$2")
+p=$(abs $(($1 * $2)))
+echo $(( $p / $g ))

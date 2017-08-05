@@ -1,0 +1,11 @@
+#!/bin/sh
+# Open the specified file or folder (also fixes xdg-open to run in background instead :))
+
+if [ -e /usr/bin/open ]; then
+  run /usr/bin/open "$@"
+elif [ -e /usr/bin/xdg-open ]; then
+  run /usr/bin/xdg-open "$@"
+else
+  fail open "$1"
+fi
+

@@ -1,0 +1,29 @@
+#!/bin/bash
+# Usage: screenshot [--screen] [--current-window] [--select-area]
+
+type=jpg
+filename=~/Images/screenshots/screenshot-$(date +%F_%T).$type
+
+# If there is no argument passed, print a short summary of the system spec first.
+[ $# -eq 0 ] && has archey3 && clear && archey3
+
+# Capture the whole screen, the current window, or only a special area.
+case "$1" in
+  --screen)         scrot $filename ;;
+  --current-window) scrot --focused --border $filename ;;
+  --select-area)    scrot --select --border $filename ;;
+  --url)            screenshot-url "$2" $filename;;
+  http*)            screenshot-url "$1" $filename;;
+  *)                scrot --count --delay 3 "$@" $filename ;;
+esac
+
+#
+ln -sf $filename /tmp/${USER}.last-screenshot.$type &>/dev/null
+
+# Copy the image to the clipboard
+xclip -selection c -t image/jpg < $filename
+
+# Display a notification on the bottom of the screen...
+echo "Screenshot taken: $filename"
+alert-desktop-osd -l '[screenshot taken]' &>/dev/null
+

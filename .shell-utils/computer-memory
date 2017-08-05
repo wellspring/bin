@@ -1,0 +1,8 @@
+#!/bin/sh
+sudo lshw -short -quiet -c memory | awk '
+  /System Memory/ { mem = $3 }
+  /Hz/            { $1=$2=$3=""; type = $0 }
+
+  END { print mem" ["type"]" }
+' \
+  | sed -E 's/\([^)]*\)//g; s/Synchronous//g; s/\s+/ /g;'

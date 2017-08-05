@@ -1,0 +1,5 @@
+#!/bin/sh
+# List all the .desktop that are known to handle a specific mimetype (useful for choosing e.g. the default web browser or pdf viewer)
+#  Usage: desktop-handlers <mimetype>
+#    e.g. desktop-handlers application/pdf
+grep -liR "MimeType=.*$(mime-type "$@").*" /usr/share/applications/ | xargs basename -as .desktop 2>/dev/null

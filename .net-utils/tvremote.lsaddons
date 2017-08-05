@@ -1,0 +1,2 @@
+#!/bin/sh
+tvremote.send Addons.GetAddons | ruby -r json -e 'puts JSON(STDIN.read)["result"]["addons"].map{|x|" ~ "+x["type"]+"/"+x["addonid"]}' | sort -u | grep "$1"

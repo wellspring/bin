@@ -1,0 +1,22 @@
+#!/bin/bash
+# Print the MOTD (script or text)
+
+# -- Do not print any MOTD after "su" / "tmux" / "screen", or in a TTY
+grep -qE "^(su|tmux|screen|/bin/login)$" /proc/$PPID/cmdline && exit
+
+# -- Clear the screen...
+clear
+
+# -- Display/execute the first motd file found...
+for motd in ~/.motd ~/.MOTD ~/.motd.conf /etc/MOTD /etc/MOTD /etc/motd.conf /etc/issue
+do
+  if [ -e "$motd" ]; then
+    if [ -x "$motd" ]; then
+      $motd
+    else
+      cat "$motd"
+    fi
+    exit 0
+  fi
+done
+

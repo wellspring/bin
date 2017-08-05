@@ -1,0 +1,4 @@
+#!/bin/sh
+# Convert byte sizes to human sizes (e.g. KB/MB/TB)
+# e.g. cat data.tsv | to-human-sizes --field=4,5
+numfmt --to=iec --suffix=B --padding=8 "$@"

@@ -1,0 +1,8 @@
+#!/bin/sh
+# Extract only the odd pages of a pdf (1, 3, 5, 7, ...)
+# Usage: pdf-odd <pdf> <pages...>
+#   e.g. pdf-odd sample.pdf
+for pdf; do
+  pdftk "$pdf" cat 1-endodd output "${pdf%%.pdf}.odd.pdf"
+  echo "Created file '${pdf%%.pdf}.odd.pdf'."
+done

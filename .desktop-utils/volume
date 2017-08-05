@@ -1,0 +1,13 @@
+#!/bin/sh
+
+killall osd_cat
+
+case "$1" in
+  up)   volume=$(amixer set Master 2%+ unmute | awk -F'[][]' '/%/{print int($2);exit}');;
+  down) volume=$(amixer set Master 2%- unmute | awk -F'[][]' '/%/{print int($2);exit}');;
+  mute) volume=$(amixer set Master toggle     | awk -F'[][]' '/\[on\]/{print int($2);exit 1}' && echo 0);;
+  *)    echo "Usage: volume <up|down|mute>"; exit 127;;
+esac
+
+osd_cat -P $volume -d 1 -o 30 -p bottom -A center -b percentage -c green -T Volume
+

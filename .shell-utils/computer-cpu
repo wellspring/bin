@@ -1,0 +1,2 @@
+#!/bin/sh
+sudo lshw -json -quiet -c cpu | jq -r '.product+" ["+.configuration.cores+" cores; "+.configuration.threads+" threads]"' 2>/dev/null | sed -E 's/\((R|TM)\)//g'

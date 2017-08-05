@@ -1,0 +1,3 @@
+#!/bin/sh
+# Sort words in line
+perl -nE 'say join(" ",sort(split))' "$@";

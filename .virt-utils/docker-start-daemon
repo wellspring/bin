@@ -1,0 +1,4 @@
+#!/bin/sh
+# Run deamonized container.
+#   e.g. docker-start-daemon base /bin/echo hello
+docker run --restart unless-stopped --detach "$@"

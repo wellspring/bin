@@ -1,0 +1,12 @@
+#!/bin/sh
+
+action=$(downcase "$1")
+
+case "$action" in
+  ""|get|status) tvremote.send "Application.GetProperties" properties='["volume"]' | jq -r .result.volume;;
+  up|raise)      tvremote.send "Application.SetVolume" volume=increment | jq -r .result;;
+  down|lower)    tvremote.send "Application.SetVolume" volume=decrement | jq -r .result;;
+  mute)          tvremote.send "Application.SetMute"   mute=toggle >/dev/null;;
+  *)             tvremote.send "Application.SetVolume" volume="$1" | jq -r .result;;
+esac
+

@@ -1,0 +1,5 @@
+#!/bin/sh
+# Compress/zip the specified folder (or the current folder)
+# Usage: zip-folder [dir]
+folder=${1:-$(basename "$PWD")};shift
+(cd ..; zip -9r "$@" "${folder}.zip" "$folder")

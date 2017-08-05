@@ -1,0 +1,28 @@
+#!/bin/sh
+# Get or set the default application to run using open/xdg-open for a specified file/mimetype/extension.
+#
+# Note: This updates one of those files:
+# - /usr/share/applications/mimeapps.list
+# - /usr/share/applications/mimeinfo.cache
+# - ~/.config/mimeapps.list
+# - ~/.local/share/applications/mimeapps.list
+# - ~/.local/share/applications/mimeinfo.cache
+
+# -- Check arguments
+if [ $# -eq 0 ] || [ $# -ge 3 ] || [[ $1 =~ "^(-h|--help)$" ]]; then
+  echo "  Usage: $0 <file|mimetype|extension> [app.desktop]"
+  exit 127
+fi
+
+# -- Get mimetype
+mimetype=$(mime-type "$1")
+app=${2%.desktop}.desktop
+
+# -- Get or set the default application to run for the mimetype
+if [ $# -eq 1 ]; then
+  xdg-mime query default "$mimetype"  # GET
+else
+  echo "Setting new handler for '$mimetype' ..."
+  xdg-mime default "$app" "$mimetype" # SET
+fi
+

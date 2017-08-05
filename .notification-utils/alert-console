@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Another way to make the terminal visible on X
+[ -n "$WINDOWID" ] && wmctrl -i -r "$WINDOWID" -b add,demands_attention &>/dev/null;
+
+# Alarm bell (or visual bell, which make the terminal visible)
+tput bel
+

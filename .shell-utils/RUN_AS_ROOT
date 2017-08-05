@@ -1,0 +1,13 @@
+#!/bin/sh
+# Run the specified function as root.
+
+if [ $USER = 'root' ]; then
+  eval "$@"
+elif has sudo; then
+  sudo --preserve-env "$@"
+elif has su; then
+  su --shell=$SHELL --preserve-environment --command "$@"
+else
+  fail run as root: "Can't run the command '$*': sudo/su not found."
+  exit 1
+fi

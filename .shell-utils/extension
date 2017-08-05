@@ -1,0 +1,2 @@
+#!/bin/sh
+for file; do echo "$file" | sed 's/.*\.//; s/.*/\L&/'; done

@@ -1,0 +1,3 @@
+#!/bin/sh
+# find functions (defined in ~/.bin/)
+find ~/{.,}{bin,script,functions}/ -iname "*$**" 2>/dev/null | tac

@@ -1,0 +1,45 @@
+#!/bin/sh
+
+action=$(downcase "$1")
+playerid=$(tvremote.send Player.GetActivePlayers | jq -r '.result[].playerid')
+
+case "$action" in
+  ""|help|--help|-h)
+    echo "Usage: $0 [play|pause|toggle|stop|status|position]"
+    echo "Usage: $0 seek <percentage|seconds|time>"
+    echo "Usage: $0 [+]<URL>"
+    exit 1
+    ;;
+
+  addons|goto|nowplaying|send|sendclipboard|sendkey|sendtext|volume)
+    shift
+    tvremote."$action" "$@"
+    exit
+    ;;
+
+  play)             tvremote.send "Player.PlayPause" playerid="$playerid" play=true;;
+  pause)            tvremote.send "Player.PlayPause" playerid="$playerid" play=false;;
+  toggle|play-pause)tvremote.send "Player.PlayPause" playerid="$playerid";;
+  stop)             tvremote.send "Player.Stop"      playerid="$playerid";;
+  seek)             tvremote.send "Player.Seek"      playerid="$playerid" value="$2";;
+  prev*)            tvremote.send "Player.GoTo"      playerid="$playerid" to=previous;;
+  next)             tvremote.send "Player.GoTo"      playerid="$playerid" to=next;;
+  status)           [ -z "$playerid" ] && echo "STOPPED" || tvremote.send "Player.GetProperties" playerid="$playerid" properties='["speed"]' | ruby -rjson -e 'puts (JSON(STDIN.read)["result"]["speed"]==0) ? " Paused" : " Playing"';;
+  position)         tvremote.send "Player.GetProperties" playerid="$playerid" properties='["time","totaltime","percentage"]' | ruby -rjson -e 'r=JSON(STDIN.read)["result"]; percentage=r["percentage"].round(2).to_s+"%"; time=%w{time totaltime}.map{|k|r[k].values_at("hours","minutes","seconds").join(":")}.join(" / "); puts "#{time} [#{percentage}]"';;
+
+  *youtube*|*youtu.be*)
+    if [[ "$action" =~ ^(\+*)http ]]; then
+      tvremote.play "$1"
+    else
+      echo "Sending youtube action to the TV..."
+      path=$(shift; echo "$*" | sed -E 's/ /+/g; s_^@(.*)_/user/\1/_; s_^#(.*)_/channel/\1/_; s_^([^/].*)_/search/?q=\1_')
+      tvremote.goto videos "plugin.video.youtube${path}"
+    fi
+    ;;
+
+  *)
+    echo "Playing url '$*' ..."
+    tvremote.play "$*"
+    ;;
+esac
+

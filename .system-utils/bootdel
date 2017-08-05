@@ -1,0 +1,25 @@
+#!/bin/sh
+# Unegister the specified service to NOT start at boot time.
+#   Usage: bootdel <service...>
+#     e.g. bootdel nginx samba
+
+# Check which service command exist on the system...
+for x in systemctl rc-update update-rc.d; do
+  if has $x; then
+    cmd=$x
+    break
+  fi
+done
+
+# For each service name passed in argument...
+for service
+do
+  case "$cmd" in
+    systemctl)    RUN_AS_ROOT systemctl disable $service;;      # (e.g. archlinux)
+    update-rc.d)  RUN_AS_ROOT update-rc.d -f $service remove;;  # (e.g. debian)
+    rc-update)    RUN_AS_ROOT rc-update del $service default;;  # (e.g. gentoo)
+    *)            fail remove service: "This Operating System is not supported by this script."
+  esac
+done
+
+

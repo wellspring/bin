@@ -1,0 +1,9 @@
+#!/bin/sh
+# Run the application in a terminal (if we're already in a terminal just exec the app, otherwise spawn a terminal)
+
+if [[ -t 1 ]]; then
+  eval "$@";
+else
+  terminal -e bash -c "$*;pause"
+fi
+

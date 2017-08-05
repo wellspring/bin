@@ -1,0 +1,22 @@
+#!/bin/sh
+# Flush the DNS caches
+
+case "$(ostype | downcase)" in
+
+  # -- [APPLE] Mac OS X
+  darwin)
+    eval "$(sw_vers -productVersion | awk -F. '{print ($2<6)?"sudo lookupd -flushcache":($2<9)?"sudo dscacheutil -flushcache":($2<10)?"sudo killall -HUP mDNSResponder":($3<4)?"sudo discoveryutil mdnsflushcache; sudo discoveryutil udnsflushcaches":"sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"}')"
+    ;;
+
+  # -- [MICROSOFT] Windows
+  windows*|cygwin*)
+    ipconfig /flushdns
+    ;;
+
+  # -- Linux/BSD
+  *)
+    sudo nscd -i hosts
+    ;;
+
+esac
+

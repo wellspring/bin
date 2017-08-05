@@ -1,0 +1,15 @@
+#!/bin/sh
+# Rename a pdf semi-automatically depending on its metadata.
+#   Usage: pdf-rename <filename...>
+for pdf; do
+  newname=$(pdfinfo "$pdf" | gawk '/^Author/  { $1=""; author=$0 }
+                                   /^Title/   { $1=""; title=$0 }
+                                   /^Pages/   { pages=$2 }
+                                   /[0-9]{4}/ { if(!year){match($0, "[0-9]{4}", m);year=m[0]}}
+                                   END {print author" - "title" ("year"; "pages" pages).pdf"}' \
+                           | sed -E 's/^\s//; s/\s+/ /g')
+
+  if confirm rename "'$pdf'" to "'$newname'"; then
+    mv "$pdf" "$newname"
+  fi
+done

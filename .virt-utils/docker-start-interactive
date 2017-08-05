@@ -1,0 +1,4 @@
+#!/bin/sh
+# Run interactive container.
+#   e.g. docker-start-interactive base /bin/bash
+docker run --interactive --tty "$@"

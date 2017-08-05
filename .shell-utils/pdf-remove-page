@@ -1,0 +1,18 @@
+#!/bin/sh
+# Remove a page from a pdf
+# Usage: pdf-remove-page <n> <pdf>
+
+n=$1
+pdf=$2
+pages=$(pages-in "$pdf" | cut -f1 -d\ )
+
+mv "${pdf}" "${pdf}.bak"
+
+if [ "$n" -eq "$pages" ]; then
+  pdftk "${pdf}.bak" cat 1-$((n-1)) output "$pdf"
+elif [ "$n" -eq 1 ]; then
+  pdftk "${pdf}.bak" cat $((n+1))-end output "$pdf"
+else
+  pdftk "${pdf}.bak" cat 1-$((n-1)) $((n+1))-end output "$pdf"
+fi
+

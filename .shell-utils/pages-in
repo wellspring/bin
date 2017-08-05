@@ -1,0 +1,33 @@
+#!/bin/sh
+# Show the number of pages in a document (pdf, ...)
+# Usage: pages-in <file>
+#   e.g. pages-in demo.pdf
+
+# For each file passed in argument...
+for file
+do
+  if [ -f "$file" ]; then
+    pages=""
+
+    # Try to read the number of pages/slides depending on the extension...
+    case "$(extension "$file")" in
+      pdf)    pages=$(pdfinfo "$file" | awk '/^Pages:/{print $2}');;
+      djvu)   pages=$(djvused -e n "$file");;
+      #epub)   pages=$();;
+      #mobi)   pages=$();;
+      #azw3|aws)pages=$();;
+      pptx)   pages=$(unzip -p "$file" docProps/app.xml | grep -oP '(?<=\<Slides\>).*(?=\</Slides\>)' );;
+      docx)   pages=$(unzip -p "$file" docProps/app.xml | grep -oP '(?<=\<Pages\>).*(?=\</Pages\>)');;
+      doc)    pages=$(wvSummary "$file" | grep -oP '(?<=of Pages = )[ A-Za-z0-9]*');;
+      ppt)    pages=$(wvSummary "$file" | grep -oP '(?<=of Slides = )[ A-Za-z0-9]*');;
+      odt)    pages=$(unzip -p "$file" meta.xml | grep -oP '(?<=page-count=")[ A-Za-z0-9]*');;
+      *)
+        fail "get information: unknown extension for file '$file'."
+        ;;
+    esac
+
+    # Print the number of pages...
+    [ -n "$pages" ] && echo "$pages pages in $file"
+  fi
+done
+

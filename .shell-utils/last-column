@@ -1,0 +1,3 @@
+#!/bin/sh
+# Usage: last-column [filename]
+awk '{print $NF}' "$@"

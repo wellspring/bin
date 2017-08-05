@@ -1,0 +1,6 @@
+#!/bin/sh
+# Try to fix/repair a corrupted pdf file if possible. (XREF table and stream lengths)
+# Usage: pdf-repair <pdf>
+pdf=$1; shift
+pdftk "$pdf" output "${pdf%%.pdf}.fix.pdf"
+echo "Created file '${pdf%%.pdf}.fix.pdf'."

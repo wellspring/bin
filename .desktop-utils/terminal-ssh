@@ -1,0 +1,2 @@
+#!/bin/sh
+urxvtc -e ssh p

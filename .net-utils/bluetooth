@@ -1,0 +1,31 @@
+#!/bin/bash
+is-enabled() { bluetoothctl <<< 'show' | grep 'Powered: yes' &>/dev/null; }
+switch() { bluetoothctl <<< "power $1" &>/dev/null; }
+
+case "$1" in
+  --help|--usage|usage|help|h|u|-u|-h)
+    echo "Usage: $0 [on|off|toggle]       # default: on"
+    echo "Usage: $0 status"
+    ;;
+
+  --status|status|s|-s)
+    is-enabled && echo "" || echo "%{F#555}"
+    is-enabled
+    ;;
+
+  --toggle|--switch|toggle|switch|t|-t)
+    if is-enabled; then switch off; else switch on; fi
+    ;;
+
+  --off|--disable|--no|--false|false|no|disable|off|d|-d)
+    switch off
+    ;;
+
+  --on|--enable|--yes|--true|true|yes|enable|on|-e)
+    switch on
+    ;;
+
+  *) switch on;;
+esac
+
+

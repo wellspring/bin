@@ -1,0 +1,4 @@
+#!/bin/sh
+# Extract all links of a webpage.
+# Usage: links <url...>
+for url; do lynx -dump -listonly -nonumbers -hiddenlinks=merge $url | sort -u; done

@@ -1,0 +1,15 @@
+#!/bin/sh
+# Colorize some text
+# Usage: echo text | colorize [fg] [bg]
+
+# Set text color (foreground), and background if specified
+tput setaf "${1:-1}"
+[ -n "${2//-/}" ] && tput setab "$2"
+shift;shift
+
+# output the text piped to it
+pipe-txt "$@"
+
+# reset colors
+tput sgr0
+

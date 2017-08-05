@@ -1,0 +1,7 @@
+#!/usr/bin/zsh
+# Print the first parent folder that contains the specified file or folder.
+#   Usage: backfind <file|folder>
+#   Example: backfind .git
+
+echo (../)#$1(Y1:a:h)
+

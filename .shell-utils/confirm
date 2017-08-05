@@ -1,0 +1,14 @@
+#!/bin/sh
+# Usage: confirm <text>
+
+# Ask...
+echo -ne "Are sure you want to $*? [yN] "
+read -r answer
+
+# Return 0 or 1
+if [[ "$answer" =~ ^[Yy]$ ]]; then
+  exit 0
+else
+  exit 1
+fi
+

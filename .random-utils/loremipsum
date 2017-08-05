@@ -1,0 +1,15 @@
+#!/bin/sh
+# Generate some random "Lorem Ipsum" placeholder text
+# Usage: loremipsum [n] ["chars"|"words"|"paragraphes"]
+#   e.g. lorem 15 paragraphs
+#   e.g. lorem 500 words
+
+read N TYPE <<<$(echo "$*" | grep -Eio '[a-z]+|[0-9]+' | tr '[:upper:]' '[:lower:]' | tr '\n' ' ')
+case "$TYPE" in
+  char*|byte*) TYPE=bytes;;
+  word*)       TYPE=words;;
+  *)           TYPE=paras;;
+esac
+
+curl -sSf "http://www.lipsum.com/feed/xml?amount=${N:-1}&what=${TYPE}&start=yes" | awk '/<lipsum>/,/<\/lipsum>/{gsub("<[^>]*>","",$0);print}'
+

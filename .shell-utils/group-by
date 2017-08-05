@@ -1,0 +1,15 @@
+#!/bin/sh
+# Group data by regex.
+#   Usage: cat data.tsv | group-by <regex> [column] [separator]
+#     e.g. cat data.tsv | group-by '(\d{4})' 3
+regex=${1:-(.*)}
+column=${2:-1}
+delimiter=${3:-\\s}
+perl -F"$delimiter+" \
+     -lane "\$F[$((column-1))] =~ /$regex/;
+            push @{\$k{\$1}},\$_;
+             
+            END {
+              \$\"=\"\\n\";
+              print \"\\n\$_:\\n@{\$k{\$_}}\" for sort keys(%k)
+            }"

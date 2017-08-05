@@ -1,0 +1,23 @@
+#!/bin/sh
+# Backup the specified file or folder (Usage: backup <file>)
+
+#TODO: disk support (e.g. /dev/sda1, or its alias: $1==disk (if no such file exists))
+
+# Create the directory if needed
+BACKUP_DIR="$HOME/Backups/"
+mkdir -p "$BACKUP_DIR"
+
+# For each argument...
+for file
+do
+  # Compress the file/folder... (hidden with `.`)
+  ARCHIVE_NAME=$(basename "$file")
+  ARCHIVE_DATE=$(date +%Y-%m-%d_%H:%M)  # or: date +%Y.%m.%d-%I:%M%p
+  ARCHIVE="${BACKUP_DIR}/.${ARCHIVE_NAME}__${ARCHIVE_DATE}.tar.xz"
+  tar cJvf "$ARCHIVE" "$file"
+
+  # Create a visible link to the latest version...
+  LINK="${BACKUP_DIR}/${ARCHIVE_NAME}.tar.xz"
+  ln -sf   "$ARCHIVE" "$LINK"
+done
+

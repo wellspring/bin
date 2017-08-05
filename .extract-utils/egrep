@@ -1,0 +1,3 @@
+#!/bin/sh
+# (extended-regex grep, BETTER REGULAR EXPRESSIONS)
+grep -E "$@";

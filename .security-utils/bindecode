@@ -1,0 +1,2 @@
+#!/bin/sh
+pipe "$@" | xxd -r -p

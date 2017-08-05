@@ -1,0 +1,2 @@
+#!/bin/sh
+sudo lshw -json -quiet -c system | jq -r '.configuration.chassis'

@@ -1,0 +1,3 @@
+#!/bin/sh
+# find binaries in path (e.g. `bin grep` find all the grep apps: grep, egrep, fgrep, pgrep, ...)
+find -L ${PATH//:/ } -maxdepth 1 -type f -executable -iname "*$**" -exec readlink -f {} \; 2>/dev/null | sort -u

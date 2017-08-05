@@ -1,0 +1,2 @@
+#!/bin/sh
+sudo lshw -short -quiet -c network | awk '/\/0/{iface=$2; $1=$2=$3=""; print "["iface"] "$0}' | sed -E 's/\s{2,}/\t/g'

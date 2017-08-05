@@ -1,0 +1,5 @@
+#!/bin/sh
+# Join pdf together
+# Usage: pdf-join <pdf1> <pdf2> [...]
+pdftk "$@" cat output combined.pdf
+echo "Created file 'combined.pdf'."

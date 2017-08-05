@@ -1,0 +1,11 @@
+#!/bin/sh
+
+file="$HOME/NOTES/SCRATCHPAD/$(date +%F).txt"
+
+# Start the vim in a terminal (without swap file, assume we save all the time manually anyway)
+if [ -z $(pgrep -a gvim | grep "SCRATCHPAD") ]; then
+  gvim --cmd "set titlestring=Scratchpad\\ ::\\ Notes\\ ::\\ $(date +%F)" 
+else
+  i3-msg '[title="^Scratchpad\\ ::\\ Notes"] scratchpad show'
+fi
+

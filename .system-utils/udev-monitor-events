@@ -1,0 +1,2 @@
+#!/bin/sh
+RUN_AS_ROOT udevadm monitor --udev --property

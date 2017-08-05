@@ -1,0 +1,2 @@
+#!/bin/sh
+pipe "$@" | hunspell | awk -F': ' '/^&/{print $2}' #| sed 's/, /\n/g' | less

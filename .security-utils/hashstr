@@ -1,0 +1,25 @@
+#!/bin/sh
+# Hash a text string (in md5, sha1, etc.).
+#   Usage: hashstr <algorithm> <text>
+#   Usage: <algorithm> <text>
+#     e.g. hashstr md5 foobar
+#     e.g. echo foobar | md5
+
+# Extract the char/hex/asm_instruction to repeat from the command name or the argument...
+executable=$(basename "$0")
+if [ "$executable" = "hashstr" ]; then
+  algorithm=${1:?missing first argument: ALGORITHM (e.g. md5)}; shift
+else
+  algorithm=$executable
+fi
+
+# Hash the text...
+if has "${algorithm}sum"; then
+  pipe "$@" | "${algorithm}sum" | awk '{print $1}'
+elif has openssl; then
+  pipe "$@" | openssl "${algorithm}" | awk '{print $2}'
+else
+  fail hash: Please install coreutils or openssl.
+  exit 1
+fi
+

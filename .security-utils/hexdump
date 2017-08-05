@@ -1,0 +1,9 @@
+#!/bin/sh
+# Print a hexdump of the string.
+
+if [ -e /usr/bin/hexdump ]; then  pipe "$@" | /usr/bin/hexdump -Cv
+elif has xxd; then                pipe "$@" | xxd -g1
+elif has od; then                 pipe "$@" | od -A x -t x1z -v
+else fail hash: Please install coreutils or util-linux.;  exit 1
+fi
+

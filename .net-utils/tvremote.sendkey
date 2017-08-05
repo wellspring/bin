@@ -1,0 +1,11 @@
+#!/bin/sh
+
+for key; do
+  case "$key" in
+    Right|Up|Down|Left|Select|Info|ContextMenu|Home)
+      tvremote.send Input.$key;;
+    *)
+      tvremote.send Input.SendText text="$key" done=false;;
+  esac
+done
+

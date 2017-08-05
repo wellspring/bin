@@ -1,0 +1,3 @@
+#!/bin/sh
+# Find which .desktop applications are set to xdg-open a specific mimetype.
+grep "$1" ~/.config/mimeapps.list {/usr,~/.local}/share/applications/mime{apps.list,info.cache}  

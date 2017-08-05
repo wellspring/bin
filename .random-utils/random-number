@@ -1,0 +1,14 @@
+#!/bin/sh
+# Generate a random number.
+# Usage: rand [start] [end] [step]
+#   e.g. rand 90 180 10     -- generate a number between 90 and 180 by increment of 10 (90, 100, 110, ..., 180)
+#   e.g. rand 10 20         -- generate a number between 10 and 20 (10,11,12,...,20)
+#   e.g. rand 100           -- generate a number between 0 and 10
+#   e.g. rand               -- generate a number between 0 and 32767
+
+[ $# -eq 0 ] && echo $RANDOM && exit
+
+read START END STEP <<<$(echo "$@" | sed 's/[-,;]\|\.\.\+/g /g; s/^\S\+$/0 &/')
+if [ -n "$STEP" ]; then START=$((START/STEP)); END=$((END/STEP)); fi
+echo $(( (START+RANDOM%(END-START+1))*${STEP:-1} ))
+

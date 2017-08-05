@@ -1,0 +1,8 @@
+#!/bin/sh
+title=$(echo "$*" | sed -E 's_https?://(\w+.)?wikipedia.org/wiki/__; s/_/ /g');
+file="/disk/dump/wikipedia/big/enwiki-latest-pages-articles-indexes/$(echo $title | head -c 1).index";
+id=$(awk -F: "/:$title\$/{print \$1;exit}" "$file");
+
+dd if=/disk/dump/wikipedia/big/enwiki-latest-pages-articles.xml bs=1 skip=$((id-9)) \
+  | awk '/<text/,/<\/text/{print} /<\/text>/{exit}' \
+  | sed 's/\s*<[^>]*>\s*//g; s/&amp;/\&/g; s/&lt;/</g; s/&gt;/>/g; s/&quot;/"/g; s/&nbsp;/ /g';

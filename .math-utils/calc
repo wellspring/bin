@@ -1,0 +1,6 @@
+#!/bin/sh
+# Calculate the result of an expression
+# e.g. calc '2*3+4'
+qalc -t "$(pipe "$@")"
+
+#pipe "$@" | bc -lq

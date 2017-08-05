@@ -1,0 +1,52 @@
+#!/bin/sh
+# Play the file specified on the tv (kodi)
+#   Usage: tvremote.play [+]<url...>
+queue=
+
+# For each url passed in argument...
+for url
+do
+  # Is the url preprended with a '+' ?
+  # > Then, queue the item to the playlist.
+  # > Otherwise, erase the playlist.
+  if [[ "$url" =~ ^\++(.*) ]]; then
+    url=${BASH_REMATCH[1]}
+    queue=true
+  fi
+
+  # If it's not a direct link to a media, try to handle the plugin...
+  case "$(downcase "$url")" in
+    # -- Radios
+    freq3|frequence3) url='plugin://plugin.audio.shoutcast/resolve/488152';;
+    nrj|nrj*fr*)      url='plugin://plugin.audio.radio_de/station/8280';;
+    nrj*ru*)          url='plugin://plugin.audio.radio_de/station/17366';;
+    nrj*s*)           url='plugin://plugin.audio.radio_de/station/10494';;
+
+    # -- Videos
+    *ted.com*)
+      echo "Playing TED Talks video..."
+      url="plugin://plugin.video.ted.talks/?mode=playVideo&url=$url"
+      ;;
+    *youtube*|*youtu.be*)
+      if [[ "$url" =~ [?\&]list=([^#\&\?]*) ]]; then
+        echo "Playing youtube playlist..."
+        url="plugin://plugin.video.youtube/play/?playlist_id=${BASH_REMATCH[1]}"
+      elif [[ "$url" =~ ^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).* ]]; then
+        echo "Playing youtube video..."
+        url="plugin://plugin.video.youtube/play/?video_id=${BASH_REMATCH[7]}"
+      else
+        fail parse youtube url.
+      fi
+      ;;
+
+    esac
+
+  # Play the item...
+  [ -z "$queue" ] && tvremote.send Playlist.Clear playlistid=1 &>/dev/null
+                     tvremote.send Playlist.Add   playlistid=1 item="{\"file\":\"$url\"}"
+  [ -z "$queue" ] && tvremote.send Player.Open    item='{"playlistid":1,"position":0}' &>/dev/null
+
+  # Queue the other urls passed in argument (if any)
+  queue=true
+done
+

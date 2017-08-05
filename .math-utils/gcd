@@ -1,0 +1,10 @@
+#!/bin/sh
+# Return the GCD (Greatest Common Divsior) of a number.
+a=$(abs "$1")
+b=$(abs "$2")
+
+while [ "$a" -ne "$b" ]; do
+  [ "$a" -gt "$b" ] && a=$((a-b)) || b=$((b-a))
+done
+
+echo $a

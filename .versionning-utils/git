@@ -1,0 +1,9 @@
+#!/bin/sh
+#TODO: transform into a function (then we can use `command git`, it's cleaner!)
+
+if [ $# -eq 0 ]; then
+  /usr/bin/tig;
+else
+  /usr/bin/git "$@";
+fi
+

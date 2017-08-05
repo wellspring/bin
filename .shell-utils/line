@@ -1,0 +1,3 @@
+#!/bin/sh
+# Usage: line <n> [filename]
+sed $1'!d' $2

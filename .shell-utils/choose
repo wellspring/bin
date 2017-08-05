@@ -1,0 +1,46 @@
+#!/bin/bash
+# Usage: choose <title> [choice1] [choice2] [choice3] [...]
+# e.g.   os=$(choose "Choose an operating system:" Linux BSD Windows "OS X")
+
+# -- HELPERS
+separator()  { printf "%${1:-5}s" | tr " " "-"; }
+up()         { if [ "$N" -gt 0    ]; then _unselect; tput cuu1 >&2; N=$((N-1)); _select; fi }
+down()       { if [ "$N" -lt "$MAX" ]; then _unselect; tput cud1 >&2; N=$((N+1)); _select; fi }
+left()       { tput cub1 >&2; }
+right()      { tput cuf1 >&2; }
+_unselect()  { tput setaf 7 >&2;echo -ne "\r    ${CHOICES[$N]}" >&2; }
+_select()    { tput setaf 2 >&2;echo -ne "\r  » ${CHOICES[$N]}" >&2; }
+hide_cursor(){ tput civis >&2; }
+save()       { echo "${CHOICES[$N]}"; }
+cleanup()    { if [ -z "$CLEAN" ]; then tput cvvis >&2; for i in $(seq $N "$MAX"); do tput cud1 >&2; done; tput setaf 7 >&2; CLEAN=true; fi }
+trap cleanup EXIT
+
+# Handle arguments...
+TITLE=$1; shift
+CHOICES=("$@")
+MAX=$((${#CHOICES[@]}-1))
+N=0
+
+# Display the title, the choices of the menu, and the selector... (and hide the cursor)
+echo -en "  $TITLE\n  $(separator $((${#TITLE}-1)))\n" >&2
+for i in $(seq 0 $MAX); do echo "    ${CHOICES[$i]}" >&2; done
+for i in $(seq 0 $MAX); do tput cuu1 >&2; done;
+hide_cursor
+_select
+
+# Handle keys...
+while true; do
+  read -srn1 key
+  case $key in
+    A|k|8|p|u) up;;                             # Move UP
+    B|j|2|n|d) down;;                           # Move DOWN
+    C|l|6|r)   ;;                               # Move RIGHT // (ignore)
+    D|h|4|l)   ;;                               # Move LEFT  // (ignore)
+    |"[")    ;;                               # ESC        // (ignore, as it's used as control seq)
+    "")        cleanup; save; exit;;            # ENTER
+    q|x)       exit 1;;                         # Quit.
+    #*)                                         #TODO: Handle custom key shortcut
+  esac
+done
+
+#:)

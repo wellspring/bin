@@ -1,0 +1,3 @@
+#!/bin/bash
+echo -e "\n(Press any key to continue.)" | grey
+read -s -n1

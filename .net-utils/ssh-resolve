@@ -1,0 +1,2 @@
+#!/bin/sh
+ssh -G "$@" | awk '/^hostname/{print $2}'

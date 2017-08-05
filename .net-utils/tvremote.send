@@ -1,0 +1,27 @@
+#!/bin/sh
+# Send an api request to Kodi.
+#  Usage: tvremote.send <JSON-API-Method> [params=value...]
+
+#----------[edit]----------#
+HOST=tv
+PORT=8080
+USER=kodi
+PASS= # MASKED #
+#----------[/edit]----------#
+
+# Parse arguments...
+method=$1; shift
+params=
+for param; do
+  params="$params, $(echo "$param" | sed -E "s/([^=:]+)[=:](\\S*)/\"\\1\": \"\\2\"/g; s/\"([0-9]+|true|false|null|[[{].*)\"/\1/g")"
+done
+
+# DEBUG
+#echo -e "{ \"jsonrpc\": \"2.0\", \"method\": \"$method\", \"params\": { ${params/, } }, \"id\":1 }\n---" >&2
+
+# Send the request...
+curl -s \
+  -X POST http://$USER:$PASS@$HOST:$PORT/jsonrpc \
+  --header "Content-Type: application/json" \
+  -d "{ \"jsonrpc\": \"2.0\", \"method\": \"$method\", \"params\": { ${params/, } }, \"id\":1 }" | jq .
+

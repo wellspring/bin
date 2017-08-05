@@ -1,0 +1,26 @@
+#!/bin/bash
+# Compress files
+#   Usage: compress <archive.ext> <files_or_folders>
+
+case "$archive" in
+  *.tar)                         tar -cf "$@";;
+  *.tar.gz|*.tgz|*.gtar)         tar -czf "$@";;
+  *.tar.bz2|*.tar.bzip2|*.tbz2)  tar -cjf "$@";;
+  *.tar.xz|*.txz)                tar -cJf "$@";;
+  *.tar.z|*.tz)                  tar -cZf "$@";;
+  *.tar.lzma|*.tlz)              tar --lzma -cf "$@";;
+  *.tar.lzop)                    tar --lzop -cf "$@";;
+  *.tar.lz)                      tar --lzip -cf "$@";;
+  *.zip)                         zip "$@";;
+  *.rar)                         rar "$@";;
+
+  *.gz)                          gzip "${1%%.gz}";;
+  *.bz2)                         bzip2 "${1%%.bz2}";;
+  *.lzma)                        lzma "${1%%.lzma}";;
+  *.z)                           /usr/bin/compress "${1%%.z}";;
+
+  *)  
+    echo -e "\e[31m   /!\\ Error: unknown extension to create '$archive'.\e[00m"
+    ;;
+esac
+

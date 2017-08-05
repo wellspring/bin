@@ -1,0 +1,6 @@
+#!/bin/bash
+# Usage: qr <url>
+FILE=$(mktemp /tmp/qrcode.XXXXX) 
+qrencode -l H -m 1 -s 1 -o "$FILE" "$(xclip -out)"
+feh -FZ --force-aliasing "$FILE"
+rm -v "$FILE"

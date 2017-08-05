@@ -1,0 +1,20 @@
+#!/bin/sh
+# Rotate the pages of a pdf
+# Usage: pdf-rotate <pdf> <angle>
+#   e.g. pdf-rotate sample.pdf 90
+
+pdf=$1
+angle=$2
+
+angle=$(( ((360+angle)%360)/90 ))
+out="${pdf%%.pdf}.rotated-$((angle*90)).pdf"
+case "$angle" in
+  0) anglename=north;;
+  1) anglename=east;;
+  2) anglename=south;;
+  3) anglename=west;;
+esac
+
+pdftk "$pdf" cat 1-end$anglename output "$out"
+echo "Created file '$out'."
+

@@ -1,0 +1,8 @@
+#!/bin/sh
+# Extract only the even pages of a pdf (2, 4, 6, 8, ...)
+# Usage: pdf-even <pdf> <pages...>
+#   e.g. pdf-even sample.pdf
+for pdf; do
+  pdftk "$pdf" cat 1-endeven output "${pdf%%.pdf}.even.pdf"
+  echo "Created file '${pdf%%.pdf}.even.pdf'."
+done

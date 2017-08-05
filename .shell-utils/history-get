@@ -1,0 +1,11 @@
+#!/usr/bin/zsh --login
+# Read the zsh history from a script.
+#   Usage: history-get [n] [nameofthescript] [histfile]
+
+n=${1:-1}
+scriptname=${2:-history-get}
+export HISTFILE=${3:-~/.zsh_history}
+
+fc -R
+fc -lL | grep -vE "[\\t /]$scriptname ?" | tail -$n | sed 's/^\s*[0-9]*\s*/$ /'
+

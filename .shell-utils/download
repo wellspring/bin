@@ -1,0 +1,18 @@
+#!/bin/sh
+# Download the specified file(s) or url(s)...
+#   Usage: download <url...>
+#     e.g. download http://foo/bar/file.ext ftp://foo/bar.file.ext
+
+for url in "$@"
+do
+  # Select the appropriate tool for the job...
+  case "$url" in
+    *youtube.com/*|*youtu.be/*) app=$(first 'youtube download utility' youtube-dl);;
+    *)                          app=$(first 'download utility' wget curl);;
+  esac
+  [ -z "$app" ] && exit
+
+  # Download the file...
+  run-in-terminal $app "$url"
+done
+

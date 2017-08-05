@@ -1,0 +1,30 @@
+#!/bin/bash
+# Usage: ssh-select
+clear
+echo
+
+# -- Choose SSH server in ~/.ssh/config
+server=$(awk '
+  tolower($1) == "host" {
+      if(host) { print "\""host"\"" }
+      sub(/[Hh]ost /,"",$0);
+      gsub("*.","",$0);
+      gsub(/\s*#.*/,"",$0);
+      host=$NF
+  }
+  tolower($1) == "hostname" {
+      print "\""host"\t("$2")\" "
+      host=""
+  }
+  END { if(host) { print "\""host"\"" } }
+' ~/.ssh/config | column -t | xargs sh -c 'choose "[SSH] Connect to... " "$@" </dev/tty' | awk '{print $1}')
+
+# -- Connect to it...
+if [ -n "$server" ]; then
+  clear
+  echo -e "\e[7m ssh \e[0m Connecting to \`$server\` ...\n"
+  ssh "$server"
+else
+  echo -e "\nCancelled."
+fi
+

@@ -1,0 +1,7 @@
+#!/bin/sh
+# Reorder the pages of a pdf
+# Usage: pdf-reorder <pdf> <pages...>
+#   e.g. pdf-reorder sample.pdf 1-26 30 27 28 29 31-end
+pdf=$1; shift
+pdftk "$pdf" cat "$@" output "${pdf%%.pdf}.fix.pdf"
+echo "Created file '${pdf%%.pdf}.fix.pdf'."

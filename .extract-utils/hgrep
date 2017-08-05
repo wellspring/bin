@@ -1,0 +1,6 @@
+#!/bin/bash
+# grep through shell history
+fc -l 0 -1 | sed -n "/${1:-.}/s/^ */!/p" | tail -n ${2:-10} # // better?
+
+#history | grep --color=auto "$@"
+#grep --color=auto "$@" "$HISTFILE" | sed 's/[^;]*;//'

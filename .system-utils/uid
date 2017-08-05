@@ -1,0 +1,3 @@
+#!/bin/bash
+# Usage: uid <username>
+awk -F: "\$1 == \"$1\" { print \$3 }" /etc/passwd

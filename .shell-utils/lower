@@ -1,0 +1,2 @@
+#!/bin/sh
+pipe "$@" | tr '[:upper:]' '[:lower:]'

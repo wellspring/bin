@@ -1,0 +1,14 @@
+#!/bin/sh
+# Interractive code scratchpad using vim.
+# Usage: codi [filetype] [filename]
+
+syntax="${1:-ruby}"; shift
+
+vim -c \
+      "let g:startify_disable_at_vimenter = 1 |\
+      set bt=nofile ls=0 noru nonu nornu |\
+      hi ColorColumn ctermbg=NONE |\
+      hi VertSplit ctermbg=NONE |\
+      hi NonText ctermfg=0 |\
+      Codi $syntax" "$@"
+

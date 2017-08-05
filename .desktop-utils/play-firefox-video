@@ -1,0 +1,2 @@
+#!/bin/sh
+/opt/fresno/fresno -j "content.location.href" | sed 's/^.\(.*\)..$/\1/' | xargs movgrab -q -f mp4:1280x720 -o - | nohup vlc --qt-minimal-view - &>/dev/null &

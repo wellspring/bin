@@ -1,0 +1,3 @@
+#!/bin/sh
+docker-remove-all-containers
+docker-remove-all-images

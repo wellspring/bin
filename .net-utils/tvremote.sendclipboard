@@ -1,0 +1,9 @@
+#!/bin/sh
+clipboard=$(paste)
+
+if grep '^http' <<<"$clipboard" &>/dev/null; then
+  tvremote "$clipboard"
+else
+  tvremote.sendtext "$clipboard"
+fi
+

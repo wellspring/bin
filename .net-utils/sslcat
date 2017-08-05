@@ -1,0 +1,20 @@
+#!/bin/sh
+# Print SSL certificate and details
+#   Usage: sslcat <HOST> <PORT>
+
+cert="$(openssl s_client -connect "$1:${2:-443}" </dev/null | awk '/^--*BEGIN/,/^--*END/')"
+
+# Display the main certificate infos...
+printf '%s\n' "$cert" | openssl x509 -in /dev/stdin -text; echo
+
+# Display the fingerprints...
+printf '%s\n' "$cert" | openssl x509 -in /dev/stdin -noout -md5 -fingerprint
+printf '%s\n' "$cert" | openssl x509 -in /dev/stdin -noout -sha1 -fingerprint
+printf '%s\n' "$cert" | openssl x509 -in /dev/stdin -noout -sha256 -fingerprint
+printf '%s\n' "$cert" | openssl x509 -in /dev/stdin -noout -sha512 -fingerprint; echo
+
+# Display the expiration date...
+expirationdate=$(printf '%s\n' "$cert" | openssl x509 -in /dev/stdin -noout -enddate | awk -F= '{print $2}')
+days=$(( ( $(date --date "$expirationdate" +%s) - $(date +%s) ) / 86400 ))
+echo -e "Expire in $days days.\t($expirationdate)"
+

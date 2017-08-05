@@ -1,0 +1,6 @@
+#!/bin/sh
+# Easy calculations with 2
+#   e.g.  2 pow 8
+#   e.g.  2 x 44
+#   e.g.  2+3
+echo "2$*" | sed 's/pow\|\*\*/^/g; s/x/*/g; s/div/\//g; s/mod/%/g; s/,/./g; s/\s*//g' | bc -lq

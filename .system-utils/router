@@ -1,0 +1,23 @@
+#!/bin/bash
+#TODO: https://wiki.archlinux.org/index.php/Network_bridge
+ifaces=$(sudo lshw -c network -json 2>/dev/null | jq -r 'select(.disabled == null) | .logicalname+" "+(.description|gsub(" interface";""))')
+default_eth=$(echo "$ifaces" | awk '$2=="Ethernet" { print $1 }')
+default_wifi=$(echo "$ifaces" | awk '$2=="Wireless" { print $1 }')
+
+#-----------[EDIT]-----------#
+ETH=${1:-$default_eth}
+WIFI=${2:-$default_wifi}
+ROUTER_IP=${3:-192.168.42.1}
+#-----------[/EDIT]----------#
+
+# Enable packets forwarding
+sudo sysctl net.ipv4.ip_forward=1 >/dev/null
+
+# Setup router ip
+sudo ip link set up dev $ETH
+sudo ip addr add ${ROUTER_IP}/24 dev $ETH
+
+# Share wifi over eth
+sudo iptables -t nat -A POSTROUTING -o $WIFI -j MASQUERADE
+sudo iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i $ETH -o $WIFI -j ACCEPT

@@ -1,0 +1,6 @@
+#!/bin/sh
+# Run the task in the background (ignore stdout/stderr) + detach it from the current process
+#   Usage: run <app> [args]
+#     e.g. run firefox -P master
+bin=$1; shift
+nohup "$bin" "$@" &>/dev/null &

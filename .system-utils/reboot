@@ -1,0 +1,29 @@
+#!/bin/sh
+# Safe way to poweroff/reboot a local or remote machine.
+
+# Usage: shutdown [machine] [options] -- [time] [msg]
+# Usage: halt     [machine] [options]
+# Usage: reboot   [machine] [options]
+# Usage: poweroff [machine] [options]
+
+#   e.g. reboot tv
+#   e.g. reboot
+
+cmd=$(basename $0)
+
+case "$cmd" in
+  halt|poweroff|shutdown|reboot)
+    if [[ "$1" =~ ^[^-+]  &&  "$1" != "now" ]]; then
+      targethost=$1; shift
+      ssh "$targethost" "$cmd" "$@"
+    else
+      confirm_cmd "/usr/bin/$cmd" "$@"
+    fi
+    ;;
+
+  *)
+    echo "Unknown command: $cmd"
+    fail
+    ;;
+esac
+

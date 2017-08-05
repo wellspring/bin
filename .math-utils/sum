@@ -1,0 +1,4 @@
+#!/bin/sh
+# Sum the N column of the file (default: 1st column).
+# Usage: sum [column] [file]
+cat $2 | awk "{n=n+\$${1:-1}}; END{print n}"

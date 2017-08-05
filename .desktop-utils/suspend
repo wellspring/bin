@@ -1,0 +1,3 @@
+#!/bin/sh
+lock &
+RUN_AS_ROOT pm-suspend

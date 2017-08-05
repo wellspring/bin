@@ -1,0 +1,9 @@
+#!/bin/sh
+# Take a screenshot of a webpage.
+#   Usage: screenshot-url <url> [outfile]
+CutyCapt \
+  --min-width=1024 --min-height=768 \
+  --user-agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36' \
+  --method=get \
+  --url="${1:?missing url}" \
+  --out="${2:-output.screenshot.jpg}"
