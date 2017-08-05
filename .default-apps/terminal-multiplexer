@@ -1,0 +1,4 @@
+#!/bin/sh
+# Open the first terminal multiplexer found
+app=$(first 'terminal multiplexer' tmux screen mtm)
+[ -n "$app" ] && run-in-terminal $app "$@"

@@ -1,0 +1,5 @@
+#!/bin/sh
+# Edit the specified file using a GUI (or TUI if not found), using the first editor found.
+app=$(first 'graphical editor'  "$GRAPHICAL_EDITOR" gvim subl3 atom gedit \
+                                "$VISUAL" "$EDITOR" nvim vim micro nano emacs vi pico ed)
+[ -n "$app" ] && run $app "$@"

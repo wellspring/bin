@@ -1,0 +1,4 @@
+#!/bin/sh
+# Edit the specified file in the console/tty/terminal, using the first editor found.
+app=$(first 'editor' "$VISUAL" "$EDITOR" nvim vim micro nano emacs vi pico ed)
+[ -n "$app" ] && run-in-terminal $app "$@"

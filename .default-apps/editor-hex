@@ -1,0 +1,4 @@
+#!/bin/sh
+# Edit the specified file using a graphical hexadecimal editor, using the first editor found.
+app=$(first 'hex editor' 010editor okteta bless ghex hexedit)
+[ -n "$app" ] && run $app "$@"
