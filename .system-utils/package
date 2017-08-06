@@ -113,7 +113,7 @@ case "$action" in
     esac
     ;;
 
-  --search|--find|find|search|-s)
+  --search|--find|find|search|s|-s)
     case $packagemanager in
       guix)                         $packagemanager -s "$@";;
       pacaur|yaourt)                $packagemanager -Ss "$@";;
@@ -130,7 +130,7 @@ case "$action" in
     esac
     ;;
 
-  --that-provide*|--that-ha*|--with|--that-contain*|thatprovide*|thatcontain*|thatha*|provide*|with|w|-t|t|-t)
+  --that-provide*|--that-ha*|--with|--that-contain*|thatprovide*|thatcontain*|thatha*|provide*|with|t|-t)
     case $packagemanager in
       yum|dnf)                      $packagemanager provides "$@";;
       zypper)                       $packagemanager what-provides "$@";;
@@ -166,7 +166,7 @@ case "$action" in
     esac
     ;;
 
-  --show|--info|--query|--what-is|whatis|query|info|show|s|i|q|w|-w|-q|-i|-s)
+  --show|--info|--query|--what-is|whatis|query|info|show|q|w|-w|-q)
     case $packagemanager in
       guix)                         $packagemanager --show="$@";;
       pacaur|yaourt|pacman)         $packagemanager -Sii "$@";;
