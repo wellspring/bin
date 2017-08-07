@@ -1,0 +1,3 @@
+#!/bin/sh
+git commit --fixup "$@"
+echo -n '[fixup '$(current-git-revid)']' | copy
