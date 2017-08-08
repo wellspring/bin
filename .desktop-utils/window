@@ -1,0 +1,32 @@
+#!/bin/sh
+# Find window id.
+#   Usage: window [--foreground] [--select] [--window-class <class>] [--window-title <title>] [--window-id <id>]
+
+# -- Handle arguments
+case "$1" in
+  --window-id|--id|--wid|-w|-id|id|wid)
+    win_id=$2
+    shift=2;;
+
+  --window-title|--window-name|--title|--name|title|name|named|-t|-n)
+    win_id=$(xdotool search --limit 1 --name "$2")
+    shift=2;;
+
+  --window-class|--class|class|-c)
+    win_id=$(xdotool search --limit 1 --class "$2")
+    shift=2;;
+
+  --foreground*|--current*|--active*|--first*|--fg|foreground*|current*|active*|first*|fg|-f|-a)
+    win_id=$(xdotool getactivewindow)
+    shift=1;;
+
+  --select*|--choose*|--pick*|select*|choose*|pick*|sel|-s|s|"")
+    win_id=$(xdotool selectwindow)
+    [ $# -gt 0 ] && shift=1;;
+  *)
+    win_id=$(xdotool selectwindow);;
+esac
+
+# -- Display the window identifier found.
+echo ${shift:-0} $win_id
+

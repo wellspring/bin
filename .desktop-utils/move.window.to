@@ -1,5 +1,7 @@
 #!/bin/sh
-# Move window r
+# Move window to the specified corner.
+#  Usage: window.move.to [top|bottom][left|center|right] [windowid]
+#    e.g. window.move.to bottomright
 
 MARGIN_TOP=42
 MARGIN_LEFT=10

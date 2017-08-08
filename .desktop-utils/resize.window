@@ -1,34 +1,15 @@
 #!/bin/sh
-# Resize a window (click to select)
-#   Usage: resize.window 1024 768
+# Resize a window + move to bottom right corner.
+#   Usage: resize.window  [--foreground] [--select] [--window-class <class>] [--window-title <title>] [--window-id <id>] <width> <height>
+#     e.g. resize.window 1024 768
 
 # -- Handle arguments
-case "$1" in
-  --window-id|--id|--wid|-w|-id|id|wid)
-    windowselection=...
-    shift 2;;
-
-  --window-title|--window-name|--title|--name|title|name|named|-t|-n)
-    windowselection="search --limit 1 --name $2"
-    shift 2;;
-
-  --window-class|--class|class|-c)
-    windowselection="search --limit 1 --class $2"
-    shift 2;;
-
-  --foreground*|--active*|--fg|--first*|first|fg|foreground|-f|-a)
-    windowselection=getactivewindow
-    shift;;
-
-  *)
-    windowselection=selectwindow;;
-esac
-
-win_id=$(xdotool $windowselection)
-x=${1:-720}
-y=${2:-405}
+read n win_id <<<$(window "$@")
+shift $n
+width=${1:-720}
+height=${2:-405}
 
 # -- Resize the window... (and move to bottomright)
-xdotool windowsize "$win_id" "$x" "$y"
+xdotool windowsize "$win_id" "$width" "$height"
 move.window.to bottomright "$win_id"
 
