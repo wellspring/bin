@@ -1,0 +1,2 @@
+#!/bin/sh
+gcc -xc -masm=intel -Os -S -o- <(echo -e "int code(){ return sizeof($*); }") | awk '/^\s+[a-z].*/{print $3;exit}'

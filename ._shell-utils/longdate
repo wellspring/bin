@@ -1,0 +1,4 @@
+#!/bin/sh
+# Output the date in a nice long format (e.g. "Monday 1st January, 2001")
+[ -n "$1" ] && at="-d @$1"
+date $at +'%A %e %B, %Y' | sed 's/\s\+/ /g' | add-ordinal-suffix

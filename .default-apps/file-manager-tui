@@ -1,4 +1,0 @@
-#!/bin/sh
-# Open the first file manager found
-app=$(first 'file manager' nnn ncdu ranger vifm mc lf lfm)
-[ -n "$app" ] && run_in_terminal $app "$@"

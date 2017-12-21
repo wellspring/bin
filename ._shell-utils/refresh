@@ -1,0 +1,10 @@
+#!/bin/sh
+# Alternative from `watch` that supports 256 colors (fixed time to 2sec)
+# -- by Kaz, https://stackoverflow.com/a/37473257/8971037
+while true
+do
+  clear
+  printf "[%s] @ $HOSTNAME -->  Output of \`%s\`:\n\n" "$(date +'%H:%M:%S -- %d/%m/%Y')" "$*"
+  ${SHELL-/bin/sh} -c "$*"
+  sleep 2
+done

@@ -1,0 +1,11 @@
+#!/bin/sh
+# Colorize lines matching regex.
+#   Usage: colorize-lines <pattern> [bgcolor]
+#     e.g. colorize-lines '^# -- '
+
+regex=${1?missing regex}; regex=$(echo "$regex" | sed 's/^[^^]/^.*&/;s/[^$]$/&.*$/')
+color=${2:-226} # DEFAULT BACKGROUND COLOR: bright yellow
+perl -pe "if(/${regex}/){ s/\\e\\[0m//g; s/(.*)/\\e[48;5;${color}m\\1\\e[0m/ }"
+
+#---
+#highlight "$regex" "$color"

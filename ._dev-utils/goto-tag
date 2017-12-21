@@ -1,0 +1,3 @@
+#!/bin/sh
+#   Usage: goto <tag>
+vim -t"${1?missing argument}"

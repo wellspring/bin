@@ -1,0 +1,29 @@
+#!/bin/bash
+# Create or edit a function (using a template).
+# Usage: fu <function-to-create-or-edit [...]>
+
+FUNCTIONS_DIR=~/.bin
+TEMPLATES_DIR=~/.templates
+
+# -- Create the functions directory if it doesn't exists...
+[ -e "$FUNCTIONS_DIR" ] || mkdir -p $FUNCTIONS_DIR/
+functions=()
+
+# -- For each functions specified in argument...
+# -- If the function doesn't exist, ensure that a category is specified (or ask for it), and create one from template
+for func; do
+  if [ ! -e "$FUNCTIONS_DIR/$func" ]; then
+    echo TODO
+    # cp $TEMPLATES_DIR/shell-script.sh "$file" && chmod +x "$file"
+  fi
+
+  functions+=("$FUNCTIONS_DIR/$func")
+done
+
+# --
+echo edit "${functions[@]}"
+
+# -- Relink everything properly...
+# (cd $FUNCTIONS_DIR; for file in .*/*; do ln -sf $file .; done)
+hash -r
+

@@ -1,0 +1,11 @@
+#!/bin/sh
+# Create a tiny http proxy to analyze and log in/out requests easily.
+#   Usage: proxy-http-to <host> [port=80] [localport=8080]
+#     e.g. proxy-http-to www.google.com
+
+remote_host=${1?}
+remote_port=${2:-80}
+local_port=${3:-8080}
+
+socat -v -x -d -d tcp-listen:$local_port,fork tcp-connect:$remote_host:$remote_port  2>&1
+

@@ -1,4 +1,0 @@
-#!/bin/sh
-# Open the first epub viewer found
-app=$(first 'epub viewer' ebook-viewer calibre)
-[ -n "$app" ] && run $app "$@"

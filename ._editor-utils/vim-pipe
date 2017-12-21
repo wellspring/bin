@@ -1,0 +1,3 @@
+#!/bin/zsh
+# VI Pipe Edit: edit the  (Usage: command1 | vipe | command2)
+() { $EDITOR $1 </dev/tty >/dev/tty && cat $1 } =(cat)

@@ -1,0 +1,28 @@
+#!/bin/sh
+# Find binaries in path except local/user ones (and resolve links to not get lured).
+# Alternative to `command -v <name>`, but improved for my needs. :)
+#   Usage: bin <name|regex> [...]
+#     e.g. bin which     # outputs: /usr/bin/which
+#     e.g. bin vi        # outputs: /usr/bin/vim
+#     e.g. bin python    # outputs: /usr/bin/python3.6
+#     e.g. bin 'python?' # outputs: /usr/bin/python2.7 /usr/bin/python3.6
+#     e.g. bin '*grep'   # outputs: /usr/bin/{grep, egrep, pgrep, fgrep, zgrep, ...}
+
+# -- No argument? Just go to the personal bin directory then.
+if [ $# -eq 0 ];then
+  cd ~/.bin || exit 0
+fi
+
+# -- For each arguments...
+for arg
+do
+  if [[ "$arg" =~ [][*?] ]]; then
+    # Display ALL MATCHES matching the expression.
+    find ${PATH//:/ } -follow -maxdepth 1 -type f -executable -iname "$arg" -exec readlink -f {} \; 2>/dev/null
+    exit 0
+  else
+    # Display the first match only (not in home directory and in a local folder)
+    /bin/which -a --skip-functions --skip-dot "$@" | xargs -r readlink -f | grep -Ev -e '/(local|share)/' -e '^/(home|root|$HOME)/' -e "^[^/]" -m1
+  fi
+done
+

@@ -1,0 +1,6 @@
+#!/bin/zsh
+last_page=$(curl http://repo.xposed.info/module-overview | grep pager-last | grep -Eo 'page=[0-9]+' | sed 's/[^0-9]//g')
+for page in {0..$last_page}
+do
+  curl "http://repo.xposed.info/module-overview?combine=&status=All&field_restrict_edits_value=All&sort_by=title&page=$page" | grep 'field-name' | sed 's/.*\/module\/\([^"]*\)">\([^<]*\)/- \2 (\1): /; s/field-name-all-authors.*/">/; s/<[^>]*>//g; s/&amp;/&/g; s/&nbsp/ /g'
+done

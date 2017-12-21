@@ -1,0 +1,3 @@
+#!/bin/sh
+# List all directories to look for binaries (similar to $PATH but separated by \n instead of :)
+exists ${PATH//:/ } | uniq+

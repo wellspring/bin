@@ -1,0 +1,4 @@
+#!/bin/sh
+# Convert '.json' files to YAML.
+# Usage: json2yaml <csvfile>  >  <yamlfile>
+ruby -r json -r yaml -e 'puts JSON(STDIN.read).to_yaml'

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Alternative to `command` that works even when a script in path wanna call something.
+cmd=$(bin "$1"); shift;
+$cmd "$@"

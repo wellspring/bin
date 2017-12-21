@@ -1,0 +1,4 @@
+#!/bin/sh
+# Open the first music player found.
+app=$(first 'music player' spotify deadbeef lollypop deepin-music clementine amarok gnome-music vlc)
+[ -n "$app" ] && run $app "$@"

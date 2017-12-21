@@ -1,0 +1,8 @@
+#!/bin/sh
+# Extract Github's repository's full-name from url (or not)
+#   Usage: github-repo-from-url <url>
+#     e.g. github-repo-from-url github/hub                            # -> github/hub
+#     e.g. github-repo-from-url https://github.com/github/hub         # -> github/hub
+#     e.g. github-repo-from-url https://github.com/github/hub/issues  # -> github/hub
+#     e.g. echo https://github.com/github/hub | github-repo-from-url  # -> github/hub
+pipe-txt "$@" | sed -E 's_(https?:)?//(www.)?github.com/__; s_([^/]+/[^/]+).*_\1_'

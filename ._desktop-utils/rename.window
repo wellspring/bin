@@ -1,0 +1,5 @@
+#!/bin/sh
+xdotool selectwindow set_window --name "RENAMED WINDOW :)" 
+
+#---
+#e.g. xdotool search --class Kodi set_window --name "$(KODI_HOST=localhost tvremote.nowplaying)"

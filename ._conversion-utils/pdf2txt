@@ -1,0 +1,5 @@
+#!/bin/sh
+# Convert pdf to text (keep the layout, but remove the footer/header lines without having to specify cropping dimentions
+pdftotext -layout -eol unix "$@" - | perl -p0e 's/(.*\n){2}\x0c(.*\n){0,2}/\n\n\n\n/gm; s/(\s*\n){4}/\n\n/gm'
+
+#pdftotext -nopgbrk -eol unix -layout "$@" - | perl -p0e 's/(^\s*$\n)*.*Page \d+( of \d+)\s*\n.*\n(^\s*$\n)*//gm; s/(\n[\t\v ]*){3,}\n/\n\n/gm'

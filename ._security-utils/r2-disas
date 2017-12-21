@@ -1,0 +1,24 @@
+#!/bin/sh
+# Disassemble the specified file
+#   Usage: r2-disas <file> [n-instructions] [opts]
+#     e.g. r2-disas /bin/ls
+#     e.g. r2-disas /bin/ls 100
+#     e.g. r2-disas /bin/ls '' -AA
+
+# -- Handle arguments
+file=${1?missing argument}
+[ -z "$2" ] && action="pD section_end..text-section..text" || action="pd $2"
+shift 2
+
+# -- Disassemble
+r2 -qNc "$action @ section..text" \
+    -e scr.color=false            \
+    -e asm.lines=false            \
+    -e asm.tabs=0                 \
+    -e asm.tabsoff=0              \
+    -e asm.tabsonce=true          \
+    -e asm.bytespace=true         \
+    -e asm.emu=true               \
+    -e asm.slow=true              \
+    "$@" "$file"
+

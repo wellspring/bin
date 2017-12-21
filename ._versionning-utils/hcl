@@ -1,0 +1,4 @@
+#!/bin/sh
+# Mercury clone repository.
+# Usage: hcl <repository>
+hg clone "$@"

@@ -1,0 +1,49 @@
+#!/bin/bash
+#   Usage: c2shellcode [compiler options] <code>
+#     e.g. c2shellcode 'write(2,"Hello World\n",13); exit(0);'
+set -e
+#---
+# --target=<arch><sub>-<vendor>-<sys>-<abi>, where:
+#    arch   = x86_64, i386, arm, thumb, mips, etc.
+#    sub    = for ex. on ARM: v5, v6m, v7a, v7m, etc.
+#    vendor = pc, apple, nvidia, ibm, etc.
+#    sys    = none, linux, win32, darwin, cuda, etc.
+#    abi    = eabi, gnu, android, macho, elf, etc.
+#---
+
+# -- Init
+OUTFILE=$(mktemp).c
+
+# -- Check the args
+if [ $# -lt 1 ]; then
+  echo -e "  Usage: $0 [compiler options] <C-code>\n" |red >&2
+  exit 127
+fi
+code=${@[-1]}
+options=${@:1:-1}
+
+# -- Compile the code, and display the assembly output
+echo -n "void _start(){ $code; }" | sed -E 's/([{;}])\s*/\1\n/g' > "$OUTFILE"
+#clang -fPIC -fPIE -pie -fpic -nostdlib -z execstack -fomit-frame-pointer -finline-functions -fno-zero-initialized-in-bss -Os $options -o "${OUTFILE}.o" "$OUTFILE"
+clang -fPIC -fPIE -pie -fpic -nostdlib -nostdinc -include /usr/include/libr/sflib/linux-x86-64/sflib.h -z execstack -fomit-frame-pointer -finline-functions -fno-zero-initialized-in-bss -Os $options -o "${OUTFILE}.o" "$OUTFILE"
+
+# -- Display code + asm + shellcode
+echo "  Original C code:"
+echo "----------"
+cat "$OUTFILE"
+echo "----------"
+echo
+echo "  In assembly:"
+echo "----------"
+r2 -qc 'af;pdf@e:scr.utf8=false,asm.flags=false,asm.lines.ret=false,asm.bytespace=true,asm.symbol=true,asm.lineswidth=0,asm.nbytes=8;?e;iz' "${OUTFILE}.o" 2>/dev/null | sed 's/^/  /g'; echo -en '\e[0m'
+echo "----------"
+echo
+echo " ->  Shellcode: $(r2 -qc 'af;p8 $FS' "${OUTFILE}.o" 2>/dev/null)" | green
+
+# -- Cleanup
+rm "${OUTFILE}.o" "$OUTFILE"
+
+
+#---
+#objdump -Mintel -d "${OUTFILE}.o" | awk 'NR>6'
+#readelf -x .rodata "${OUTFILE}.o"

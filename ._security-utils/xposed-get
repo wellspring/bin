@@ -1,0 +1,8 @@
+#!/bin/sh
+for pkg
+do
+  echo "Downloading $pkg ..."
+  wget  --quiet --show-progress --continue "$(curl http://repo.xposed.info/module/"$pkg" | grep -m1 -o 'http://dl-xda.xposed.info/modules/[^"]*\.apk')"
+done
+
+

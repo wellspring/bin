@@ -1,0 +1,9 @@
+#!/bin/sh
+# List sections in binary (ELF, PE, ...), highlight text/rodata/data lines in grey, and highlight dangerous WX sections in red.
+#   Usage: sections <filename> [filter-pattern]
+#     e.g. sections /usr/bin/ls text
+rabin2 -S "${1?missing filename}" | grep -Pi "(?<=name=).*${2}.*" | align ' ' | colorize-columns+ '[\t =]' 240 1 240 2 240 240 240 3 240 3 240 240 250 198 | colorize-lines "\\.(text|rodata|data)\\e" 234 | colorize-lines "wx" 52 | less -RSFX
+
+#---
+#SORT_BY_PERM# | sort -rk6
+#COLORIZE_BY_PERL# | colorize-lines '-x' 22 | colorize-lines 'rw' 52 | colorize-lines 'r--' 17 | recolor -----

@@ -1,0 +1,2 @@
+#!/bin/sh
+pipe-lines "$@" | perl -ple 's/^(.+?)((\.\w+){1,2}?)(\.\d+)*(-git|-latest)?\W?$/\L\2\E/'

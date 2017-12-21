@@ -1,4 +1,0 @@
-#!/bin/sh
-# Open the first pdf viewer found
-app=$(first 'pdf viewer' zathura evince mupdf acroread xpdf gv)
-[ -n "$app" ] && run $app "$@"

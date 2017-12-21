@@ -1,0 +1,7 @@
+#!/bin/sh
+# Truncated `ls` with colors in columns.
+#   Usage: lst [-<maxchars>] [opts] [path]
+#     e.g. lst -20 /tmp
+test -t 1 && pipe=less || pipe=remove-colors
+if [[ "$1" =~ ^-[[:digit:]]+$ ]]; then maxchars=${1#-}; shift; fi
+ls --color=always "$@" | truncate $maxchars | $pipe

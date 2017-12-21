@@ -1,0 +1,3 @@
+#!/bin/sh
+# Open htop in a urxvt terminal window.
+urxvtc -title "Task Manager :: htop" -e bash -c  "htop -d 10 -u tigre"

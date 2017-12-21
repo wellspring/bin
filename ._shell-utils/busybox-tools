@@ -1,0 +1,7 @@
+#!/bin/sh
+# List busybox tools/functions (e.g. ls, tar, tr, uniq, sort, ...)
+#   Usage: busybox-tools [aternativecmd]
+#     e.g. busybox-tools
+#     e.g. busybox-tools /opt/tools/busybox
+#     e.g. busybox-tools adb shell busybox
+"${@:-busybox}" | awk '/^Currently defined/,/^$/' | grep '^\s' | grep -oP "[^\r\t ,]+" | cat

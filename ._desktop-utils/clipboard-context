@@ -1,0 +1,5 @@
+#!/bin/sh
+xclip -o -t text/_moz_htmlcontext | iconv -f utf-16 | sed 's/>/&\n\n/g; s/" /&\n\t/g;s/="/ = "/g' | colorize-columns
+
+#---
+#colorize-patterns '(?<=[<])\w+' 12 '(?<=[<]\/)\w+' 4 '[-\w]+(?= = )' 2 '(?<=").*(?=")' 198

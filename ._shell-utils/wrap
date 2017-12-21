@@ -1,0 +1,2 @@
+#!/bin/sh
+perl -0pe 's/([^\n])\n([^\n])/\1 \2/gm; s/\n+/\n\n/gm' "$@" | fold -w 75 -s

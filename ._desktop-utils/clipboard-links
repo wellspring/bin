@@ -1,0 +1,3 @@
+#!/bin/sh
+[ "$(xclip -o -selection clipboard -t TARGETS)" =~ text/html ] && type="-t text/html"
+xclip -selection clipboard $type -o | urls

@@ -1,0 +1,28 @@
+#!/bin/zsh
+# Colorize the patterns matched in the specified color
+#   Usage: colorize-patterns <pattern> [color][:][bgcolor] [pattern2] [color2][:][bgcolor2] ... [color_rest]
+#     e.g. colorize-patterns '\d+' 3 '"[^"]*"' 2:0 1
+#     e.g. colorize-patterns '[^/]+$' 198
+#
+#   (default highlight color: red)
+
+setopt shwordsplit;
+color() { x=$IFS;IFS=":";c=($*); [ -n "$c[1]" ] && tput setaf "$c[1]"; [ -n "$c[2]" ] && tput setab "$c[2]"; IFS=$x }
+
+# -- Handle arguments last argument (color_rest)
+if [ $# -gt 1 ] && [ $(( # % 2 )) -eq 1  ]; then
+  last=$((#-1))
+  nocolor=$(color ${@[$#]})
+else
+  last=$#
+  nocolor='\x1b[0m'
+fi
+
+# -- Handle arguments
+for pattern color in "${@:1:$last}"; do
+  regexs="${regexs}s/${pattern//\\d/[0-9]}/$(color ${color:-1})\$&\x1b[0m${nocolor}/g; "
+done
+
+# -- Colorize the input
+perl -pe "$regexs s/^/${nocolor}/; s/$/\x1b[0m/; END{print \"\x1b[0m\"}"
+

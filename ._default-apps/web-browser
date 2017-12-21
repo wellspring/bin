@@ -1,0 +1,4 @@
+#!/bin/sh
+# Open the first web browser found.
+app=$(first 'web browser' "$WEBBROWSER" "$BROWSER" qutebrowser vimb firefox chromium opera luakit surf vimb dwb vimprobable konqueror epiphany midori dillo elinks lynx w3m)
+[ -n "$app" ] && run $app "$@"

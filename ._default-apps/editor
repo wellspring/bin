@@ -1,0 +1,4 @@
+#!/bin/sh
+# Open a GUI editor if ran on a desktop, or a TUI editor if ran on a server.
+#TODO: if starts with http, `lynx -dump -nolist <URL> | vim -`
+if [ -z "$DISPLAY" ]; then editor-gui "$@"; else editor-tui "$@"; fi

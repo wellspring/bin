@@ -1,0 +1,6 @@
+#!/bin/sh
+# List all directories to look for libraries (separated by \n)
+ldconfig -vNX 2>/dev/null | grep ':$' | sed 's_:_/_'; exit 0
+
+#---
+# cat /etc/ld.so.conf.d/* | exists | uniq+

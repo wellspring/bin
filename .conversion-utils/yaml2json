@@ -1,2 +1,0 @@
-#!/bin/sh
-ruby -r yaml -r json -e 'puts YAML.load(STDIN).to_json

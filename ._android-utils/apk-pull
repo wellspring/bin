@@ -1,0 +1,16 @@
+#!/bin/sh
+# Pull an apk from a phone/emulator to the computer
+#   Usage: apk-pull <pkgregex> [adb options]
+#     e.g. apk-pull sudosu -s 192.168.56.101:5556
+
+search=$1; shift;
+
+#adb "$@" shell cmd package list packages -f -i -u PATTERN | awk -F'[:=]' '!/com\.(android|google)\.//{print $2}' | sort -gr
+
+for pkg in $(apk-installed "$@" | grep -E "$search")
+do
+  echo " [*] Getting package '$pkg' ..."
+  apk=$(adb "$@" shell pm path "$pkg" | sed 's/^package://')
+  adb "$@" pull "$apk"
+done
+

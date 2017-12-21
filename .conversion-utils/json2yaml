@@ -1,2 +1,0 @@
-#!/bin/sh
-ruby -r json -r yaml -e 'puts JSON(STDIN.read).to_yaml'

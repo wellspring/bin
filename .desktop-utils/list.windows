@@ -1,4 +1,0 @@
-#!/bin/sh
-# List the windows (windowid,desktopid,host,title)
-#   Usage: list.windows
-wmctrl -l

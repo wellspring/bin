@@ -1,0 +1,3 @@
+#!/bin/sh
+# Open the rofi luncher to start apps easily.
+rofi -show drun -padding 20 -opacity 95

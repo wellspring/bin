@@ -1,0 +1,3 @@
+#!/bin/sh
+# wget (tiny output)
+wget --quiet --show-progress --continue "$@"

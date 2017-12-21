@@ -1,3 +1,0 @@
-#!/bin/sh
-if [ -z "$DISPLAY" ]; then editor-gui "$@"; else editor-tui "$@"; fi
-#TODO: if starts with http, `lynx -dump -nolist <URL> | vim -`

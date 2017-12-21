@@ -1,0 +1,22 @@
+#!/usr/bin/ruby -ap
+# Justify the text to exactly N characters per line (75)
+#   Usage: justify [file]
+#     e.g. cat /tmp/lorem | wrap | justify
+
+textwidth = 75 #ARGV[0] ? ARGV[0].to_i : 75
+
+words = $F.size-2;
+chars = $F.join(" ").size;
+toadd = textwidth-chars;
+
+if (words>0 && chars>textwidth*0.70)
+  extraspaces = toadd % words;
+  words
+    .times
+    .map{ toadd/words + (extraspaces==0 ? 0 : (extraspaces=extraspaces-1; 1)) }
+    .keep_if{|n|n>0}
+    .zip((1..words).to_a.shuffle)
+    .each{|spaces,index| $F[index] << " "*spaces }
+  $_ = $F.join(" ") + "\n"
+end
+

@@ -1,0 +1,6 @@
+#!/bin/sh
+# List imported symbols/functions in binary (ELF, PE, ...)
+#   Usage: imports <filename> [filter-pattern]
+#     e.g. imports /usr/bin/ls '(read|open)'
+rabin2 -i "${1?missing filename}" | grep -Pi "(?<=name=).*${2}.*" | sort -k3 | align ' ' | colorize-columns 240 2 240 3 198 | less -RSFX
+

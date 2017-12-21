@@ -1,0 +1,5 @@
+#!/bin/sh
+adb "$@" shell cmd package list packages | sed -E 's/^package://; s/^com\.(android|google)\./_ &/' | sort -gr
+
+#---
+#OLD: adb pm list packages

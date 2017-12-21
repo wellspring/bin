@@ -1,0 +1,12 @@
+#!/bin/sh
+# Find strings and their offset/va/size in a binary. (using radare2's `rabin2`)
+# Better alternative to `strings` / `grep -aPbo '[^\x00]*(...)[^\x00]*'`
+#   Usage: str <filename> [pattern]
+#     e.g. str /usr/bin/ls GCC
+rabin2 -zz "$1" | grep -Pi "(?<=string=).*${2}.*" | sort -dk8 | sed 's/string=/& /; s/\t/\\t/g;' | ./left-align '\s' 8 '  ' | colorize-columns+ 250 2 240 240 240 240 250 3 250 4 240 240 240 240 250 198 | sed -E 's/(\x1b\[0m=) /\1/' | colorize-patterns '=' 240 | less -RSFX
+
+#---
+#TODO: argument to match against sections or va/offset/size ranges (e.g. `--length 10+`)
+#      e.g. `| awk --non-decimal-data -F'[\t =]+' '{i=$6;va=$2;offset=$4;size=$8;len=$10;section=$12;match($0,"string=");string=substr($0,RSTART+7)} va<0x100'`
+#      e.g. `| awk --non-decimal-data -F'[\t =]+' '{i=$6;va=$2;offset=$4;size=$8;len=$10;section=$12;match($0,"string=");string=substr($0,RSTART+7)} section=="comment"'`
+#      e.g. `| awk --non-decimal-data -F'[\t =]+' '{i=$6;va=$2;offset=$4;size=$8;len=$10;section=$12;match($0,"string=");string=substr($0,RSTART+7)} string~/g=/'`

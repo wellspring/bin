@@ -1,0 +1,23 @@
+#!/bin/sh
+# Remove the specified columns from the input.
+#
+#   Usage: col- <columns> [separator=\s] [file]
+#
+# Note: The script has been made flexible enough to handle ranges of columns in
+# different formats:
+#  - Separated by commas: 2,3,4,5,6
+#  - Begin/end ranges:    3-  or  -3                   (equivalent to 3,4,5,6,7,8 or 1,2,3)
+#  - Range:               2-6  or  2..6   or  2...6    (equivalent to 2,3,4,5,6)
+#  - A mix of them:       2,3..5,6                     (equivalent to 2,3,4,5,6)
+#  - From the end:        -2..0   or  -3..-3           (equivalent to 7,8 or 6)
+
+column_numbers=$1
+separator=${2:-\\s}
+file=$3
+ruby -ne "
+  columns = \$_.chomp.scan(/(\\S+)($separator*)/); max = columns.size
+  indexes = '$column_numbers'.gsub(/[^0-9.,-]/,'').gsub(/(-?\\d*)(-|\\.{2,3})(-?\\d*)/) {
+    ( ( \$1.to_i )..( \$3.empty? ? max : \$3.to_i ) ).to_a.join(',')
+  }.split(',').uniq.map{|n| i=n.to_i-1; i==-1 ? max : i<0 ? i%max+1 : i}
+  puts columns.delete_if.with_index{|el,i| indexes.include?i }.flatten.join" $file
+

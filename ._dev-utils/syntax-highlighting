@@ -1,0 +1,9 @@
+#!/bin/sh
+/usr/bin/highlight --style=molokai --out-format=xterm256 "$@"
+#pygmentize "$@"
+
+#---
+# For a preview of themes/colorstyles:
+#   $ parallel 'echo THEME: {}; cat ~/.bin/ls.indexof | /usr/bin/highlight --style={} --src-lang=bash --out-format=xterm256; -----' ::: $(ls /usr/share/highlight/themes/ | sed 's/\.theme$//')
+# Other interesting themes: solarized-light, seashell, rootwater, rdark, matrix, leo, github, edit-kwrite, edit-jedit
+# Other interesting black: print

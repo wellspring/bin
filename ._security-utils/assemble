@@ -1,0 +1,6 @@
+#!/bin/sh
+# Assemble specified ASM opcodes...
+#   Usage: assemble [opts] <instructions>
+#     e.g. assemble 'xor eax,eax; inc eax; ret'
+#     e.g. assemble -a arm -c v7 -b 32 -k linux 'mov r1, 0'
+rasm2 -s intel "$@" 2>/dev/null

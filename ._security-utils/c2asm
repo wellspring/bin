@@ -1,0 +1,57 @@
+#!/bin/bash
+# Usage: c2asm <code> [opts]
+#   e.g. c2asm 'return 42'
+#   e.g. c2asm 'return 42' -march=armv7-a -mcpu=cortex-a9 -mfloat-abi=hard -target arm-linux-gnueabihf
+include() { if [ -e "./$*" ]; then echo -e "\n#include \"$*\""; elif [ -e "$INCLUDE_PATH/$*" ]; then echo -e "#include <$*>"; else fail "include $*: file not found."; fi; }
+tmpdir=$(mktemp -d)
+cd "$tmpdir"
+
+# -- Initialize an empty source code
+OUTFILE=code.c
+echo "// Generated code:" > $OUTFILE
+
+# -- Add `#include` directives
+INCLUDE_PATH=${INCLUDE_PATH:-/usr/include}
+POSIX_INCLUDES=(
+  aio.h         arpa/inet.h  assert.h      complex.h     cpio.h     ctype.h     dirent.h       dlfcn.h      errno.h
+  fcntl.h       fenv.h       fmtmsg.h      fnmatch.h     ftw.h      glob.h      grp.h          iconv.h      inttypes.h
+  langinfo.h    libgen.h     limits.h      locale.h      math.h     monetary.h  mqueue.h       ndbm.h       net/if.h
+  netdb.h       netinet/in.h netinet/tcp.h nl_types.h    poll.h                 pwd.h          regex.h      sched.h
+  search.h      semaphore.h  setjmp.h      signal.h      spawn.h    stddef.h    stdint.h       stdio.h      stdlib.h
+  string.h      strings.h    stropts.h     sys/ipc.h     sys/mman.h sys/msg.h   sys/resource.h sys/select.h sys/sem.h
+  sys/shm.h     sys/socket.h sys/stat.h    sys/statvfs.h sys/time.h sys/times.h sys/types.h    sys/uio.h    sys/un.h
+  sys/utsname.h sys/wait.h   syslog.h      tar.h         termios.h  tgmath.h    time.h         ulimit.h     unistd.h
+  utime.h       utmpx.h      wchar.h       wctype.h      wordexp.h
+)
+
+#for file in ${POSIX_INCLUDES[*]}; do include $file >> $OUTFILE; done
+
+# -- Add the code
+code="int code(){ $1; }"; shift
+echo "$code" | sed -E 's/([{;}])\s*/\1\n/g' >> $OUTFILE
+
+# -- Compile & display ASM code with colors
+if [ $# -eq 0 ]; then
+  gcc -fno-asynchronous-unwind-tables -fomit-frame-pointer -masm=intel -O0 "$@" -fverbose-asm -fno-ident -S -o- $OUTFILE \
+    | awk '/\.(section|text)/,/^END/'                                                \
+    | sed -E 's/^\s+([^.#])/>>>>\1/; s/\s*#\W*$//; s/\t/ /g'                         \
+    | align '#'                                                                      \
+    | sed 's/^>>>>/    /; s/^\s*#/#/'                                                \
+    | colorize-patterns `#CALLs & JUMPS:`  '(?<=    )(call|j)[^#]*?(?= {2,}#)'   2:0 \
+                        `#asmdirectives:`  '^\s*\..*'                          238   \
+                        `#labels:`         '^\w.*:'                            198   \
+                        `#sourcerefs:`     '(?<=: )\s*[^ \t#]+.*'               69   \
+                        `#comments:`       '#.*'                               238   \
+                        `#instructions:`                                         2
+else
+  clang -fno-asynchronous-unwind-tables -fomit-frame-pointer -masm=intel -O0 "$@" -fno-ident -Wno-unused-command-line-argument -S -o- "$OUTFILE" \
+    | grep -P '^\s*[A-Za-z0-9_]' \
+    | colorize-patterns `#asmdirectives:`  '^\s*\..*'                          238   \
+                        `#labels:`         '^\w.*:'                            198   \
+                        `#instructions:`                                         2
+fi
+
+# -- End
+cd ..
+rm -rf "$tmpdir"
+

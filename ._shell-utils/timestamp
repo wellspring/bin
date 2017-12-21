@@ -1,0 +1,4 @@
+#!/bin/sh
+# Convert unix timestamp to date, or date to linux timestamp.
+#   Usage: timestamp [timestamp]
+if [ $# -eq 0 ]; then date +%s; else date -d "@$*"; fi

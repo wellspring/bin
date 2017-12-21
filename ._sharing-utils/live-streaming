@@ -1,0 +1,73 @@
+#!/bin/bash
+# Record the desktop, and live broadcast/stream it online. (could be also used to make a screencast)
+#   Usage: live-streaming <dest-rtmp-uri> [webcam-device]
+#     e.g.                                        
+
+conf=~/.live-streaming.uri.conf
+
+# -- Handle arguments
+stream_to=$1
+webcam_device=$2; webcam=
+
+[[ -z "$stream_to" ]] && [[ -e "$conf" ]] && stream_to=$(cat "$conf")
+if [[ -z "$stream_to" ]]; then
+  echo "Usage: live-streaming <dest-rtmp-uri> [webcam-device]"
+  echo "  (or store the rtmp stream url in your $conf)"
+  return 127
+fi
+
+# -- Set stream infos #1: screen
+input_resolution=$(xwininfo -root | awk -F'[ +]*' '/geometry/ {print $3}')
+output_resolution=$input_resolution
+fps=15
+gopmin=$fps
+gop=$((2*fps))
+threads=2
+cbr=1000k
+key_frame=2
+audio_rate=44100
+#audio_bitrate=96k
+#constant_rate_factor=23
+quality=ultrafast
+
+# -- Set stream infos #2: webcam
+# if [ -n "$webcam_device" ]; then
+#   webcam_size=240x160
+#   webcam_position=780:435
+#   webcam="movie=$webcam_device:f=video4linux2, scale=$webcam_size, setpts=PTS-STARTPTS [WebCam]; [in] setpts=PTS-STARTPTS [Screen]; [Screen][WebCam] overlay=$webcam_position [out]"
+# fi
+#(to enable: add '-vf $webcam' before '-strict')
+
+# -- Start streaming...
+echo Streaming... | colorize 198
+ffmpeg -f x11grab -s "$input_resolution" -framerate "$fps" -i :0.0 -f alsa -i pulse -f flv -ac 2 -ar "$audio_rate" \
+       -vcodec libx264 -force_key_frames "expr:gte(t,n_forced*$key_frame)" -g "$gop" -keyint_min "$gopmin" -b:v "$cbr" \
+       -minrate "$cbr" -maxrate "$cbr" -pix_fmt yuv420p -s "$output_resolution" -preset "$quality" -tune film \
+       -acodec libmp3lame -threads "$threads" ${webcam:+-vf} $webcam -strict normal -bufsize $cbr \
+       "$stream_to" 2> "/tmp/ffmpeg_streaming_$(shortdate-file).log"
+
+#---
+# Twitch ........... rtmp://live.twitch.tv/app/<KEY>                  (chat: wss://irc-ws.chat.twitch.tv)
+# Facebook ......... rtmp://rtmp-api.facebook.com:80/rtmp/<KEY>       (chat: https://graph.facebook.com/v2.8/<videoid>/comments)
+# YouTube .......... rtmp://a.rtmp.youtube.com/live2/<KEY>            (chat: https://www.googleapis.com/youtube/v3/liveChat/messages?part=snippet,authorDetails&liveChatId=<LIVECHATID>)
+# DailyMotion ...... rtmp://publish.dailymotion.com/publish-dm/<KEY>
+# WatchPeopleCode .. rtmp://streaming.watchpeoplecode.com/live/<KEY>
+# Liveedu.tv ....... rtmp://eumedia8.liveedu.tv/liveedutv/<KEY>
+# Restream.io ...... rtmp://eu-central.restream.io/live/<KEY>
+# Boomstream ....... rtmp://live.boomstream.com/live/<KEY>
+# Stream.live ...... rtmp://media.stream.live:1935/live/<KEY>
+# Web.tv ........... rtmp://live3.origins.web.tv/liveext/<KEY>
+# Smashcast ........ rtmp://live.hitbox.tv/push/<KEY>
+# MobCrush ......... rtmp://live.mobcrush.net/mob/<KEY>
+# Cam4 ............. rtmp://origin.cam4.com/cam4-origin-liv/<KEY>
+# Chaturbate ....... rtmp://live.stream.highwebmedia.com/live-origin/<KEY>
+#
+# ( more: https://github.com/jp9000/obs-studio/blob/master/plugins/rtmp-services/data/services.json )
+#
+# Self hosted:
+# - nginx                     -- https://obsproject.com/forum/resources/how-to-set-up-your-own-private-rtmp-server-using-nginx.50/
+# - Wowza Server              -- https://www.wowza.com/docs/how-to-set-up-live-streaming-using-an-RTMP-based-encoder
+# - DaCast Server             -- https://my.dacast.com/
+# - Red5 Media Server         -- http://red5.org/
+# - Adobe Flash Media Server  -- http://www.adobe.com/products/adobe-media-server-family.html
+#

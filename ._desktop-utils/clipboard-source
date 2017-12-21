@@ -1,0 +1,2 @@
+#!/bin/sh
+xclip -o -selection clipboard -t text/x-moz-url-priv

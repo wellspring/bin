@@ -1,0 +1,16 @@
+#!/bin/sh
+# Access the specified code/project folder.
+#   Usage: code [project]
+#     e.g. code coreutils
+
+if [ -z "$CALLED_FROM_DOTRC" ]; then
+  fail "go to code directory (doesn't work from a script!). Please run:\n\t$(basename "$0")() { CALLED_FROM_DOTRC=1 source ~/.bin/code }"
+  exit 1
+fi
+
+if [ "$#" -gt 0 ]; then
+  cd "$(code-dir "$*")"
+else
+  cd ~/code
+fi
+

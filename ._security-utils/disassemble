@@ -1,0 +1,59 @@
+#!/bin/bash
+# Disassemble the specified binary file (using llvm-objdump)
+#   Usage: disassemble [opts] <file> [symbol]
+#     e.g. disassemble /usr/lib/libX11.so
+#     e.g. disassemble /usr/lib/libX11.so XrmInitialize
+#     e.g. disassemble /usr/lib/libX11.so 0x00049650
+#     e.g. disassemble /usr/lib/libX11.so $(entrypoint /usr/lib/libX11.so)
+#     e.g. disassemble /usr/lib/libX11.so entrypoint
+#     e.g. disassemble /usr/lib/libX11.so main
+
+# -- Handle arguments
+state=1  # 1: parsing opts, 2: parsing files, 3: parsing regexp addr/symbol of function
+opts=()
+files=()
+filters=()
+
+for arg
+do
+  if [[ -e "$arg" ]] && [[ "$state" -le 2 ]]; then
+    files+=("$arg")
+    state=2
+  elif [[ "$arg" =~ ^- ]] && [[ "$state" -le 1 ]]; then
+    opts+=("$arg")
+    state=1
+  elif [[ "$state" -ge 2 ]]; then
+    case "$arg" in
+      main)       filters+=("$(main "${files[@]}")");;
+      entrypoint) filters+=("$(entrypoint "${files[@]}")");;
+      *)          filters+=("$arg");;
+    esac
+    state=3
+  else
+    fail parse arguments: "Unknown file '$arg' (FSM_state=$state)"
+    exit 127
+  fi
+done
+
+if [ "${#files[@]}" -eq 0 ]; then
+  fail parse arguments: no file specified.
+  exit 127
+fi
+
+# -- Create a regex from the list of filters (symbols or address)...
+regex=""
+for x in "${filters[@]}"; do
+  regex="${regex}${regex:+|}$(echo -n "$x" | perl -pe 'if(/^(0x)?[0-9a-fA-F]+$/) { s/^(0x)?0*/   / } else { s/(.*)/<\1>/ }')"
+done
+[ -n "$regex" ] && regex="/^($regex):/,/^\$/)" || regex=//
+
+# -- Disassemble
+llvm-objdump -x86-asm-syntax=intel -g -source -disassemble "${opts[@]}" "${files[@]}"   \
+  | sed -E 's/^(\S.*):\s*$/\n<\1>:/'                                                    \
+  | awk "$regex"                                                                        \
+  | grep -vE '^(<Disassembly|/)'                                                        \
+  | grep -v '^\s*$'                                                                     \
+  | sed 's/\t/ /3g; s/^\S.*/&\t \t \t \t \t/'                                           \
+  | `#ALIGN` ruby -e "n=3; rows=STDIN.readlines.map{|l|l.split(/(?:\\t)+/,n)}; fmt=rows.map{|columns|columns.map(&:size).values_at(0...n).map{|e|e||0}}.transpose[0..-2].map{|size|\"%-#{size.max}s\"}.join(\"\\t\")+\"\\t%s\"; rows.each{|columns| printf fmt, *columns.values_at(0...n) }" \
+  | less
+

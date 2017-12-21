@@ -1,0 +1,11 @@
+#!/bin/sh
+# Extract the extension of the specified filename(s)...
+#   Usage: extension [file...]
+#     e.g. ext kernel.tar.Z                     # -> ".tar.z"   : handle the double-extensions
+#     e.g. ext website-latest.html.tar.gz       # -> ".tar.gz"  : handle the double-extensions but not 3
+#     e.g. ext /usr/lib/libX11.so.6.3.0         # -> ".so"      : handle the versions correctly
+#     e.g. ext /usr/lib/libr_core.so.2.2.0-git  # -> ".so"      : handle the -git and -latest suffixes correctly
+#     e.g. ext MANUAL.PDF                       # -> ".pdf"     : downcase the extension
+#     e.g. ext /bin/ls                          # -> ""         : discard files with no extension
+#     e.g. ls -F | ext                          # ...           : automatically remove the indicator added by -F
+pipe-lines "$@" | perl -lne 'if(/^(.+?)((\.\w+){1,2}?)(\.\d+)*(-git|-latest)?\W?$/) { print lc($2) }'

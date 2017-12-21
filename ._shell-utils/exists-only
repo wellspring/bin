@@ -1,0 +1,3 @@
+#!/bin/sh
+# Keep only (filter) the existing files/dir/... passed by argument or stdin (one per line).
+parallel -k 'test -e "{}" && echo "{}"' ::: "$@"; exit 0

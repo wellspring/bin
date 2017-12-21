@@ -1,0 +1,9 @@
+#!/bin/sh
+# List exported symbols/functions in binary (ELF, PE, ...)
+#   Usage: exports <filename> [filter-pattern]
+#     e.g. exports /usr/lib/libX11.so init
+rabin2 -s "${1?missing filename}" | grep -vF 'name=imp.' | grep -Pi "(?<=name=).*${2}.*" | sort -k7 | align ' ' | colorize-columns 2 240 240 240 5 240 3 198 | less -RSFX
+
+#---
+#| colorize-columns+ 3 2 240 240 240 240 240 240 3 2 250 240 3 4 3 198
+# vim: ft=sh

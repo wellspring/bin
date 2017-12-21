@@ -1,0 +1,4 @@
+#!/bin/sh
+# Record a terminal session to an asciinema file.
+#   Usage: record-term [filename]
+asciinema rec "${@:-terminalrecord_$(shortdate_file).json}"

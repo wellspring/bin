@@ -1,0 +1,12 @@
+#!/bin/sh
+# Sort by the column N, and separate the lines having different values with some dashes (e.g. used by `list-windows` to separate desktops)
+#   Usage: separate-column <n> [file]
+#     e.g. cat data | separate-column 2
+separator='"` ------------------------------------------------------------------------------------------------------------------------------"'
+awk "
+  {
+    if(x!=\$$1){ print $separator; x=\$2 };
+    print \$0
+  }
+  END { print $separator }" $2
+

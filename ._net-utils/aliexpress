@@ -1,0 +1,96 @@
+#!/bin/zsh
+
+sessionfile="$HOME/.aliexpress.session"
+appname=aebuyer
+mobile=false
+lang=en_us
+
+
+# -- LOGIN
+# Ask for user/pass
+read -r 'login?Enter email: '
+read -rs 'password?Enter password: '
+
+# Get a session id and login...
+curl 'https://login.aliexpress.com/buyer.htm' --cookie "$sessionfile" --cookie-jar "$sessionfile" &>/dev/null
+curl "https://passport.aliexpress.com/newlogin/login.do?fromSite=13&appName=$appname" --cookie "$sessionfile" --cookie-jar "$sessionfile" \
+  -H "Referer: https://passport.aliexpress.com/mini_login.htm?lang=$lang&appName=$appname&appEntrance=default&styleType=auto&bizParams=&notLoadSsoView=false&notKeepLogin=true&isMobile=$mobile" \
+  -H 'Origin: https://passport.aliexpress.com' \
+  -H 'Authority: passport.aliexpress.com' \
+  -H 'Content-type: application/x-www-form-urlencoded; charset=UTF-8' \
+  -H 'X-requested-with: XMLHttpRequest' \
+  -d 'login-home-new=new' \
+  -d "loginId=$login" \
+  -d "password=$password" \
+  -v
+
+# -- CART: LIST PRODUCTS
+#https://shoppingcart.aliexpress.com/shopcart/shopcartDetail.htm
+
+
+exit
+curl 'https://login.aliexpress.com/xman/xlogout.htm?return_url=https%3A%2F%2Ffr.aliexpress.com%2F' -H 'accept-encoding: gzip, deflate, br' -H 'accept-language: en-US,en;q=0.9,sv;q=0.8,ru;q=0.7,fr;q=0.6' -H 'upgrade-insecure-requests: 1' -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36' -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8' -H 'referer: https://fr.aliexpress.com/' -H 'authority: login.aliexpress.com' -H 'cookie: ali_apache_id=11.180.5.31.1494536928872.707762.4; ali_beacon_id=11.180.5.31.1494536928872.707762.4; __utma=3375712.911975832.1494536930.1495663092.1495663092.1; __utmz=3375712.1495663092.1.1.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); aeu_cid=c89885fcbe984043b6c12ee4da8aaaf1-1495665649801-05856-UneMJZVf; _uab_collina=149576107279343192956404; _umdata=C2A849B1DD52C050DAE8F7ACC914C10A105FE77F87E8693FCD324490D4B26847AC47E53C1581F39ECD43AD3E795C914CF13C83CBA1954A0781B579CC79C22FAE; aep_common_f=vGKtbjfsIPTJaoetX4XmtXy4sjO99Nv8MN/J88778VaD1+NlBPaQVg==; _ga=GA1.2.911975832.1494536930; l=ApmZsV0DwxMvc6mjahZcRdXlKY5z2Y1X; cna=48CbEWeucUMCAU5JPwY+CjTR; aep_history=keywords%5E%0Akeywords%09%0A%0Aproduct_selloffer%5E%0Aproduct_selloffer%0932792935256%0932702832531%0932684468961%0932823350444%091000004455132%0932717401089%0932798769582%0932690492224; _hvn_login=13; JSESSIONID=4B9F98837EC22D489B7CAACD631E49EE; acs_usuc_t=acs_rt=8499d72abf7d47e5ac5d0723a5a6e4d7&x_csrf=ac_w7x952e82; xman_us_t=x_lid=fr1015963406&sign=y&x_user=/P1YCh8a49GdXGHKmAg7hsBVB3y38iYFqvfzEIwKXQY=&ctoken=11qeavhoh_d58&need_popup=y&l_source=aliexpress; xman_f=grahaEgY5eVhmHFrj8R8jW+ceTd07yL2/tgdd+WH84EI/HO10LHA5IseZAZroW4xuDyRhVc3kXwwxHFHqYP+hqGyPfhBKKGON4sAMyGze7a0egqz+9y/JWL0E/QYrQgH31XtokXgkwDKJDNPnLXyJpuVcNaMItmeOFs7W0mheDNvIG+N5pZRrt0L1BwkQkjx3YmWv/O9Scplq4A+yVJ+AaxqHlrYs3D1zY8xCkNHv44QRY67wkUYbAeL1YbJ+g+JhXVxWTBBf5vQ5DB9oNGrguPeXl7xjDQoXVlZMvFXkRdi44yutM0M+9MPSs2rVbgK7FTUbS6+X6heE5adVe+K//Q+0jdpO9+qbEQDLDEuf5dyfYm0jyUOaiPKj5Wm9D3I/dUJ2WaSAyqkBKVlec5DDiGxtGTkgNxiU7yuSOKclhA=; xman_us_f=zero_order=n&x_locale=fr_FR&x_l=0&last_popup_time=1496056501618&x_user=FR|William|Hubault|ifm|135424431&no_popup_today=n&x_as_i=%7B%22cv%22%3A%222%22%2C%22tp1%22%3A%22ppc%22%2C%22src%22%3A%22aaf%22%2C%22af%22%3A178094261%2C%22cpt%22%3A1495665649801%2C%22channel%22%3A%22PREMINUM%22%2C%22affiliateKey%22%3A%22UneMJZVf%22%2C%22tagtime%22%3A1495665649804%2C%22vd%22%3A%2230%22%7D; intl_locale=fr_FR; aep_usuc_f=isfm=y&site=fra&c_tp=USD&x_alimid=135424431&isb=y&region=SE&b_locale=fr_FR; intl_common_forever=Du1ydjZvAJ0h1KWNrKZCjRRUVN8jgsSUHn9VBcbdMR7bDNQbUWjfPQ==; ali_apache_track=mt=1|ms=|mid=fr1015963406; ali_apache_tracktmp=W_signed=Y; xman_t=ACbOtI37hulNY96nBY4FdW1MnZ74lDXyKYW8lKhbkKTcgy0V1YUXEXY/Uu8sjoMsNwKg57rrmtwXGAnGHnpZHlR4XpaigBc7hbt0hLksKSxjIl5M3n827dRGtWQ1RK2l35t19J4T5RUCgOEA6wPMmlnBjQU7SPDrZOUvt2V/w7pf10xExxHQ3IiUn12czhxRprfCl0/6pLx0dx5hUUDwn1dcXMyibJpCGBM+EYUcznMQbQfBMxWY44WwEqUiXVG4Va9SqmMr4uFMKIR9ruGYA5IAJLMHienzxswfZSQb7YwonZUH247OzbVJG1tlI/X5pr2TbtQJTCcQ0EV7zEZv6x8ehsM4mn+wagfZFFDHOmdS0+jmFiU16K2Borm5Evx11OFqWy4zAb1xBWp30NqoCVfJ27GNhq4qgiwM/DcxpZI4Xq5vx5PKKXK48EPJs2uBG91QOm5od22e5YRjxpIOTyPFFhr0ONcRFIY23vxjmDvorVcdstt5jQx5TQGO4PCXXUdETdClYS93D8jCQ7J0wsoXWRmaz288PCIPE08TWyvB2p5bJgR1BZERvQYEGtxZ/sh9gjd1vX2gNhUunU40HSB8WNOHPNV//TDNR7pZRDb4ej6Pm/eestpeLMH/blnSQj5EOFPPhGI=; isg=AiAgn4n5bmmgG9FzmMNWk4Dl8ScygQWfUvyMh5oxtTvOlcG_QjyHg0JnCwPo' --compressed
+curl 'https://passport.aliexpress.com/logout.htm?site=13&toURL=https%3A%2F%2Ffr.aliexpress.com%2F' -H 'accept-encoding: gzip, deflate, br' -H 'accept-language: en-US,en;q=0.9,sv;q=0.8,ru;q=0.7,fr;q=0.6' -H 'upgrade-insecure-requests: 1' -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36' -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8' -H 'referer: https://passport.aliexpress.com/logout.htm?site=4&toURL=https%3A%2F%2Fpassport.aliexpress.com%2Flogout.htm%3Fsite%3D13%26toURL%3Dhttps%253A%252F%252Ffr.aliexpress.com%252F' -H 'authority: passport.aliexpress.com' -H 'cookie: ali_apache_id=11.180.5.31.1494536928872.707762.4; ali_beacon_id=11.180.5.31.1494536928872.707762.4; __utma=3375712.911975832.1494536930.1495663092.1495663092.1; __utmz=3375712.1495663092.1.1.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); aeu_cid=c89885fcbe984043b6c12ee4da8aaaf1-1495665649801-05856-UneMJZVf; _uab_collina=149576107351510503356078; aep_common_f=vGKtbjfsIPTJaoetX4XmtXy4sjO99Nv8MN/J88778VaD1+NlBPaQVg==; _ga=GA1.2.911975832.1494536930; l=ApmZsV0DwxMvc6mjahZcRdXlKY5z2Y1X; cna=48CbEWeucUMCAU5JPwY+CjTR; hl_sk=T07L6nCpSEDXfbakYNKmdg; aep_history=keywords%5E%0Akeywords%09%0A%0Aproduct_selloffer%5E%0Aproduct_selloffer%0932792935256%0932702832531%0932684468961%0932823350444%091000004455132%0932717401089%0932798769582%0932690492224; _umdata=C2A849B1DD52C05069FD3B11D57632A5810AFABD62D6F24500781E2459EF2321401C5BBC7BC6A9BCCD43AD3E795C914C4E306011900462CDB90D7B14FBEB31C4; havana_tgc=eyJsYW5nIjoiZnJfRlIiLCJwYXRpYWxUZ2MiOnsiYWNjSW5mb3MiOnsiMTMiOnsidGd0SWQiOiIyUjB2YkZfTDRQR1dSODJYdV94SldSZyIsImFjY2Vzc1R5cGUiOjQsIm1lbWJlcklkIjoxMzMxNDcxNzE3Njd9fX0sImNyZWF0ZVRpbWUiOjE1MTA2Njc4ODg4OTF9; _hvn_login=13; last_u_aebuyer_icbu="eyJoaWQiOjEzMzE0NzE3MTc2NywibG9naW5JZCI6IndpbGxpYW0uaHViYXVsdEBnbWFpbC5jb20iLCJzZyI6IjJmYWRzMzEzZDQwMmI3ZWVhYzI5YjNiZDA4MmQzNmI0NWVlYjMifQ=="; last_cc=ED8AB4E110AB2E4BE4C0437E6EAD096848A073B195D20E158029F2965078; last_ae_aebuyer=icbu; xman_f=grahaEgY5eVhmHFrj8R8jW+ceTd07yL2/tgdd+WH84EI/HO10LHA5IseZAZroW4xuDyRhVc3kXwwxHFHqYP+hqGyPfhBKKGON4sAMyGze7a0egqz+9y/JWL0E/QYrQgH31XtokXgkwDKJDNPnLXyJpuVcNaMItmeOFs7W0mheDNvIG+N5pZRrt0L1BwkQkjx3YmWv/O9Scplq4A+yVJ+AaxqHlrYs3D1zY8xCkNHv44QRY67wkUYbAeL1YbJ+g+JhXVxWTBBf5vQ5DB9oNGrguPeXl7xjDQoXVlZMvFXkRdi44yutM0M+9MPSs2rVbgK7FTUbS6+X6heE5adVe+K//Q+0jdpO9+qbEQDLDEuf5dyfYm0jyUOaiPKj5Wm9D3I/dUJ2WaSAyqkBKVlec5DDiGxtGTkgNxiU7yuSOKclhA=; xman_us_f=zero_order=n&x_locale=fr_FR&x_l=0&last_popup_time=1496056501618&x_user=FR|William|Hubault|ifm|135424431&no_popup_today=n&x_as_i=%7B%22cv%22%3A%222%22%2C%22tp1%22%3A%22ppc%22%2C%22src%22%3A%22aaf%22%2C%22af%22%3A178094261%2C%22cpt%22%3A1495665649801%2C%22channel%22%3A%22PREMINUM%22%2C%22affiliateKey%22%3A%22UneMJZVf%22%2C%22tagtime%22%3A1495665649804%2C%22vd%22%3A%2230%22%7D; intl_locale=fr_FR; aep_usuc_f=isfm=y&site=fra&c_tp=USD&x_alimid=135424431&isb=y&region=SE&b_locale=fr_FR; intl_common_forever=Du1ydjZvAJ0h1KWNrKZCjRRUVN8jgsSUHn9VBcbdMR7bDNQbUWjfPQ==; ali_apache_track=mt=1|ms=|mid=fr1015963406; ali_apache_tracktmp=W_signed=Y; acs_usuc_t=acs_rt=8499d72abf7d47e5ac5d0723a5a6e4d7&x_csrf=ac_w7x952e82; isg=AmNjVkE6PUDX9PJqVxJlytdk8q7N8Pb2xR3vvpXAv0I51IP2HSiH6kGE6Jqn' --compressed
+
+
+
+
+
+
+
+
+exit
+#---
+
+search=${*:?missing argument}
+maxpages=50
+sleep=5
+SESSION=3E052C63F94A9C9DDEF432BA7EA45CDF
+
+for page in $(seq 1 $maxpages)
+do
+  echo -n " [+] Processing page $page ... "
+  #curl "https://www.aliexpress.com/wholesale?site=glo&g=y&SortType=price_asc&SearchText=${search:?missing argument}&groupsort=1&tc=af&page=$page&needQuery=n" \
+  results=$(curl "https://www.aliexpress.com/wholesale?site=glo&g=y&SortType=price_asc&SearchText=${search// /+}&groupsort=1&page=${page}&isFreeShip=y&needQuery=n" \
+            -H 'Host: www.aliexpress.com' \
+            -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:53.0) Gecko/20100101 Firefox/53.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' \
+            -H 'Accept-Language: en-US,en;q=0.5' \
+            --compressed \
+            -H "Cookie: ali_apache_id=11.180.5.36.1495595076846.320915.1; l=AuXl2hc1EQYhZhkcTgPI5faY9asfIpm0; isg=AjAwb6VMHRqLe8ETIjdpp4ajAPeEExTDQnlxviqB_Ate5dCP0onkU4YXE1Z7; ali_beacon_id=11.180.5.36.1495595076846.320915.1; ali_apache_track=mt=1|ms=|mid=fr1015963406; ali_apache_tracktmp=W_signed=Y; xman_us_f=x_l=0&x_locale=en_US&no_popup_today=n&x_user=FR|William|Hubault|ifm|135424431&zero_order=y&last_popup_time=1495595101638; acs_usuc_t=x_csrf=3vl_mn2ko8dz&acs_rt=f23c18bf338346e894e7f434cf47db36; xman_f=Xi2iM9HidI2CByJVtSg6CYDPoyHgv+8fOzVOcet0PJb2u9QN9V9m6VqeWl22HJcHkqB5vpQrkAVtd0POZ7K6FzEwNT2/xWlgYOr4OJfbaXZKbCGfS15B32TCVhzXUr1kto8KAxeHA7zMiFTrVRJFPGRvnhhJ9cm4u9FyjQ0pjPGGMYbholLV8Mijr3ThqmdyIZjxSQFMfI69r17DQVcnIrImxzMDQ3BbFr3UvNp0zWPiCo39VVAD9hjB0yKKLGOqTFqk5J43ijgiEqOJoDjYUimbMYd5ZYMFzvlQBocFuux3c2/hhexB/nj5RSd/zJztglV/bG1iMnxSyBvKcOnpwA1utCOY8M/Y4gABb83T1OyUjYPKYGyZekhrryvI+2Dhi3wegZ9kv6jAC703jEfKaFuYS908MTZs2pVdifqAUG4=; aep_common_f=c0nL1F/v5OENwxyHM5yYJ+uCIIiQ6lXKOlVGXOfp6I9h0Trc/647xA==; aep_usuc_f=region=SE&site=glo&b_locale=en_US&isb=y&isfm=y&x_alimid=135424431&c_tp=USD; intl_locale=en_US; intl_common_forever=8vKu8kDiNy45pcmxZnCl1AuxniDf4+wj/2uq3tMCjXeJN3UyhB7LhA==; aep_history=keywords%5E%0Akeywords%09%0A%0Aproduct_selloffer%5E%0Aproduct_selloffer%0932506577215%0932787398044%0932789439679%091686671445%0932317089017%0932626385692%0932810624633%0932736456137; xman_t=u6NZ0Fgu8HzGTUeuZdNVVtSWQOwOmRse8pTJuijRQuAQbJJ6A6KhEk2JrGr3lb6sozgRSf6wttTuTVpmR4ImoybJB6Wr/UFomk2iAZnn4tJZCmtH36py+j5vEGmKt8bKvxi+202I6U0ntaX51Q+M5SRrXVjfSwhcZyIRlJRaszdcciIuM5GUWi5vTvF503jgzm/mdaG77lX4irvqf7Ehx/Fvq3RjSUaciCmHXJMh3LkrTe0Z7v/93QBZ/Q0GUUWxGNLnCa2gt66qAJhEEEBZQqKJTLQkmtQvxBSgIDqgWWAfF2AjQKxpQcIGUM8+Cz//TmVBgsBtZSyaQqWYeAfmBQ350Aw2d9PDQCent0PDeOrGSCrL4NKDS//Fna8yVBARqColV9rH3YP8wgIjZkEhSlBdJtefPUddWCzCrQSZ9UuEbC7VUK5J2M6BVJlJ4kEIi4ANuq2SK172+s6aUDlT4aMf7luiZ3rhcep9yW8n7A0uye7gHPVw4fnPzm6piJ8n9aBRhorz9if928Lj+y4CdYcRztXtFrP6P3HIwQ3Zc/+/hL8Uo47Pk9uW/BqAXK+5/SVOl0RlDzxOvbcX9sXEw22hVd1StSFuGre/K2i/UYkLZT79GrAR6odsncYjGXF5wnR/ad1xqio=; JSESSIONID=$SESSION; _mle_tmp0=eNrz4A12DQ729PeL9%2FV3cfUx8KvOTLFScnRysrQ0N3M2dLS0MHaxNLW0dDEzcDExNDBzNTdxNXNU0kkusTI0sTS1sDAzMzIyNDHTSUxGE8itsDKojQIAoC8X6Q%3D%3D; u_info=/CuS35FiYKT7w16vdNm8yyNxUU6X/exHcU0fFuPFq5M=; _uab_collina=149561087585733958114709; _umdata=FC7B91CEA76785127359E060291B885F6D24B29C8D33D9AE91B6F5B1A2247859003FCB978DD3E17ACD43AD3E795C914CB45BBCFC4AF94FAFF6CE021F112740E1; xman_us_t=x_lid=fr1015963406&sign=y&x_user=HFGFcoJkoNRUCEYfWT6mxNcruhAEHUvmx9LeWfXM6ZA=&ctoken=8qmkx4vdjmfo&need_popup=y&l_source=aliexpress" \
+            -H 'DNT: 1' \
+            -H 'Connection: keep-alive' \
+            -H 'Upgrade-Insecure-Requests: 1' \
+\
+    | awk -F'["?<>]' '
+        /history-item product/ { link="https:"$5; title=$8 }
+        /itemprop="price"/     { price=$7; lot=1 }
+        /pieces \/ lot/        { gsub("[^0-9]","",$0);lot=$1 }
+        /atc-product-id/       { id=$7; print lot"|"price"|"title"|"id}' \
+    | ruby -pe 'newpcs = $_.scan(/([\d,]+)\s*(pcs?|m[^m]|meter)/i).flatten.map{|x|x.gsub(",","").to_i}.sort.last.to_s;
+                $_[/^\d*/] = newpcs+(" "*(5-newpcs.size)) if newpcs;
+                $_ = "1#{$_}" unless $_[/^\d+/];
+                pcs, price = $_.scan(/[0-9.,]+/).take(2);
+                ppp = (price.to_f / pcs.to_i).round(3) if(pcs && price);
+                $_ = "#{ppp}|#{$_}"' \
+    | tee -a "SEARCH_$search..lst" | wc -l)
+
+  if [ "$results" -eq 0 ]; then
+    break
+  fi
+
+  echo $results results found.
+  sleep $sleep
+done
+echo END.
+
+# Join the files (and sort the data by lot/prices)
+cat "SEARCH_$search..lst" | sort -u | sort -g | /usr/bin/column -ts '|' > "SEARCH_$search.lst"
+rm "SEARCH_$search..lst"
+echo -e "\nOk. Written SEARCH_$search.lst"
+echo -n "'SEARCH_$search.lst'" | copy
+
+
+#---
+#exclude="board|module|kit"
+# | grep -viE "[| ]($exclude)[ |]"
+

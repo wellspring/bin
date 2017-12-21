@@ -1,6 +1,0 @@
-#!/bin/sh
-# Remove '#' comments.
-# NOTES:
-# - Modifications are not persistant (not saved, just displayed)
-# - Not aware of context (e.g. it will not know that # is in a string)
-sed 's/#[^!].*//' "$@"

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Download the file with the first download manager/app found.
+app=$(first 'download manager' uget aria2c axel jdownloader2 wget curl)
+[ -n "$app" ] && $app "$@"
+
+# TODO: arguments:
+  #aria2c --console-log-level=warn http://...
+  #wget -c http://...
+  #curl -s http://...
+# TODO: option for output file (e.g. `wget -O`)

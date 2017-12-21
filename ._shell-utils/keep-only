@@ -1,0 +1,65 @@
+#!/bin/bash
+# Run a `test` in parallel with multiple conditions for each thing/line passed to it. (useful to be used in a grep-way)
+# - If interactively, you probably want to use zsh's glob qualifiers instead. (cf. `ls *(<TAB>` or `man zshexpn` toward the end)
+# - If scripted, you probably just want to use `find` instead (cf. `man find`)
+#
+#   Usage:
+#
+#     e.g.
+
+# e.g. ls | keep-only-if '(regular file or directory) AND symlink'
+
+
+
+# TODO: ends-with, starts-with, contain/include (using regexp)
+# TODO: matches
+
+
+# -- Handle arguments...
+echo "$*" | sed -E -e 's/[()]/\n&\n/g' -e 's/\s+(-a|and|&&)\s+/\n-a\n/ig' -e 's/\s+(-o|or|\|\|)\s+/\n-o\n/ig' | grep -v '^\s*$' | while read -r arg
+do
+  case "$*" in
+    -f|*file*) filter=-f;;
+
+    -e|
+    -s|
+    -N|
+    -b|
+    -c|
+    -d|
+    -p|
+    -f|
+    -S|
+    -L|
+    -h|
+    -x|
+    -G|
+    -O|
+    -r|
+    -g|
+    -w|
+    -u|
+    -k|
+    -n|
+    -z|
+    -o|
+    -R|
+    -v|
+    -t|
+
+
+
+  #...
+
+    *) ;;
+  esac
+  echo CONDITION: "$arg"
+done
+
+
+
+
+
+#---
+# Keep only (filter) the existing files/dir/... passed by argument or stdin (one per line).
+#parallel -k 'test -e "{}" && echo "{}"' ::: "$@"; exit 0

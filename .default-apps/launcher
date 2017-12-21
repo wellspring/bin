@@ -1,2 +1,0 @@
-#!/bin/sh
-rofi -show drun -padding 20 -opacity 95

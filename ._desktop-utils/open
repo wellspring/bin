@@ -1,0 +1,4 @@
+#!/bin/sh
+# Open the specified file or folder (also fixes xdg-open to run in background instead :))
+open=$(first 'automatic file opener' /usr/bin/open /usr/bin/xdg-open $(bin open))
+[ -n "$open" ] && run $open "$@"

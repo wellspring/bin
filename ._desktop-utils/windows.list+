@@ -1,0 +1,4 @@
+#!/bin/sh
+# List the windows (by desktops)
+#   Usage: list.windows [filter-regex]
+(echo -e "    ID   Desk PID     X    Y  Width Height  Class         Hostname Title"; wmctrl -lxpG | grep -Pi "$*" | sort -k 2,2 -k8,8 -k10) | separate-column 2 | colorize-columns 240 3 2 68 68 6 6 2 237 198

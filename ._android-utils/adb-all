@@ -1,0 +1,2 @@
+#!/bin/sh
+adb devices | awk 'NR>1{print $1}' | parallel -rkj0 --tagstring 'on {}: ' -- adb -s "{}" "$@"

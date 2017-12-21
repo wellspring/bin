@@ -1,4 +1,0 @@
-#!/bin/sh
-# Open the first terminal emulator found
-app=$(first 'terminal emulator' "$TERMINAL" x-terminal-emulator urxvtc urxvt mrxvt rxvt termit terminator Eterm aterm uxterm xterm gnome-terminal roxterm xfce4-terminal termite lxterminal mate-terminal terminology st qterminal lilyterm tilix terminix)
-[ -n "$app" ] && run $app "$@"

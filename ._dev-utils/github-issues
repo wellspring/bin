@@ -1,0 +1,19 @@
+#!/bin/sh
+# List open github repo issues from url
+set -e
+
+# -- Prepare things...
+url="https://api.github.com/repos/$(github-repo-from-url "${1?missing url argument}")/issues?state=open&sort=created&direction=asc"
+pages=$(curl -I "$url" | grep '^Link' | grep -oP '(?<=page=)[0-9]+' | sort -nr | head -1)
+[ -z "$pages" ] && pages=1
+rm -f ISSUES
+
+# -- Get the issues...
+for page in $(seq 1 "$pages"); do
+  echo " [+] Processing page #$page ..."
+  curl "${url}&page=$page" | jq -r '.[] | "[#\(.number)][\(.created_at[0:10])] \(.title) \(if(.labels|length>0) then " -- [#"+(.labels|map(.name)|join(", #"))+"]" else "" end)"' | tee -a ISSUES
+  sleep 2
+done
+
+#---
+# API Doc: https://developer.github.com/v3/issues/

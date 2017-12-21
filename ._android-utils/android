@@ -1,0 +1,13 @@
+#!/bin/sh
+device='Samsung Galaxy S6 - 7.1.0 - API 25 - 1440x2560'
+nohup genymotion-player -n "$device" &>/dev/null &
+adb shell
+
+# LIST: genymotion-shell -c "devices list"
+# LIST: gmtool admin list
+# INSTALL: gmtool device -n "$device" install /path/filename.apk
+# PUSH: gmtool device -n "$device" push /path/filename
+# PULL: gmtool device -n "$device" pull /sdcard/path/to/file
+# SHELL: adb shell
+# REBOOT: adb reboot [bootloader|recovery|sideload|sideload-auto-reboot]
+# FACTORY_RESET: gmtool admin factoryreset "$device"

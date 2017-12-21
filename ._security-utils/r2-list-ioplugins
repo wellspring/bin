@@ -1,0 +1,2 @@
+#!/bin/sh
+(echo;underline "IO plugins:"|green; echo; radare2 -L; echo) | less -r

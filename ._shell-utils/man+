@@ -1,0 +1,17 @@
+#!/bin/sh
+# Open a manpage by going to a specific title/option definition.
+#   Usage: man+ [section] <command> <title|option>
+#     e.g. man+ find -type
+#     e.g. man+ mlr VERBS
+#     e.g. man+ poll EXAMPLES
+
+# -- Handle the first 2 arguments
+if [[ $1 =~ ^[0-9]+$ ]]; then
+  section=$1; shift
+fi
+manual=$1;shift
+
+# Open the manual (+goto regexp)
+#LESS="$LESS +/^\\s*$*\\s+.*" man $section "$manual"
+LESS="$LESS +/^\\s*$*\\s+.*" man $section "$manual"
+

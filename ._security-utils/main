@@ -1,0 +1,9 @@
+#!/bin/sh
+# Get the address of the main() function of the specified program(s)
+#   Usage: main <filename...>
+#     e.g. main /usr/bin/ls     # -> 0x00003620
+#     e.g. main /bin/{ls,cat}   # -> 0x00003620 0x00001670
+parallel -k rabin2 -M {} ::: "$@" | awk -F'[= \t]+' '/^vaddr/{print $2}'
+
+#---
+#for file; do rabin2 -M "$file" | awk -F'[= \t]+' '/^vaddr/{print $2}'; done

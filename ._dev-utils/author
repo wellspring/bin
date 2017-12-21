@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# -- Try #1: Name from `git`
+name=$(git config --global --get 'user.name' 2>/dev/null) #  || echo "Anonymous"
+if [ -n "$name" ]; then
+  email=$(git config --global --get 'user.email' 2>/dev/null | sed 's/.*/ <&>/')
+  echo "${name}${email}"
+  exit 0
+fi
+
+# -- Try #2: Name from `/etc/passwd`
+name=$(awk -F: "\$3==$UID{print \$5;exit}" /etc/passwd 2>/dev/null)
+if [ -n "$name" ]; then echo "${name}"; exit 0; fi
+
+
+# -- NOT FOUND :/
+echo Anonymous.
+exit 1
+

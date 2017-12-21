@@ -1,0 +1,5 @@
+#!/bin/bash
+# Force the parent process (or whatever process specified) to change directory
+#   Credits: Rudd-O and behdad (http://mces.blogspot.se/2007/09/linux-shell-puzzle.html)
+#   Usage: cd+ <dir> [pid]
+sudo gdb -n -q -p "${2:-$PPID}" <<<"call chdir(\"${1?missing filename}\")">/dev/null

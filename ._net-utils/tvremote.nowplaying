@@ -1,0 +1,30 @@
+#!/bin/sh
+read playerid mediatype <<<$(tvremote.send Player.GetActivePlayers | jq -r '.result[]|.playerid,.type' | tr '\n' ' ')
+tvremote.send Player.GetItem playerid=$playerid properties='["title","album","artist","season","episode","duration","showtitle","tvshowid","thumbnail","file","fanart","streamdetails"]' \
+  | ruby -rjson -e 'print "  Kodi"; h=JSON(STDIN.read)["result"]["item"]; puts " » [TVSHOW]  #{h["showtitle"]} S#{h["season"].to_s.rjust(2,"0")}E#{h["episode"].to_s.rjust(2,"0")}: #{h["title"]}"' 2>/dev/null
+
+#---
+#| jq -r .result.item.label
+
+
+# {
+#   "error": {
+#     "code": -32602,
+#     "data": {
+#       "method": "Player.GetItem",
+#       "stack": {
+#         "message": "Invalid type string received",
+#         "name": "playerid",
+#         "type": "integer"
+#       }
+#     },
+#     "message": "Invalid params."
+#   },
+#   "id": 1,
+#   "jsonrpc": "2.0"
+# }
+
+#{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": "AudioGetItem"}
+#or
+#{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": [], "playerid": 1 }, "id": "VideoGetItem"}
+

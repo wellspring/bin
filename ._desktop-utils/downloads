@@ -1,0 +1,3 @@
+#!/bin/zsh
+# List everything downloaded in the last week (last 7 days)...
+ls -rclth ~/Downloads/*(m-7) #| hl '[^/]+$' 198 237

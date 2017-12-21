@@ -1,0 +1,4 @@
+#!/bin/sh
+# Convert '.csv' files to '.xlsx'.
+# Usage: csv2xlsx <csvfile>
+unoconv --format xlsx "$@"

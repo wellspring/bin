@@ -1,0 +1,22 @@
+#!/bin/sh
+# Create a tiny proxy to sniff the traffic from UNIX Sockets
+#   Usage: proxy-unixsocket <socketfile> [localport=8000]
+#     e.g. proxy-unixsocket /var/run/nscd/socket
+
+unixsocket=${1?}
+local_port=${2:-8000}
+
+# easiest to use a separate terminal window for each command
+#$ socat TCP-LISTEN:9000,reuseaddr openssl:host:port,cafile=some.ca
+#$ tcpdump -i lo -w /tmp/tcpdump.output port 9000
+#$ socat READLINE,history=$HOME/.socat.hist TCP:localhost:9000
+
+#sudo mv /path/to/sock /path/to/sock.original
+#sudo socat -t100 -x -v UNIX-LISTEN:/path/to/sock,mode=777,reuseaddr,fork UNIX-CONNECT:/path/to/sock.original
+
+# fake TCP server connects to real Unix socket
+#socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CONNECT:some.sock
+# start packet capture on said port
+#tcpdump -i lo -f 'tcp port 6000'
+# clients connect to this Unix socket
+#socat UNIX-LISTEN:fake.sock,fork TCP-CONNECT:127.0.0.1:6000

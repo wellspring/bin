@@ -1,0 +1,4 @@
+#!/bin/sh
+sudo find /usr/lib/{ruby,python?.?,node_modules} \
+      \( -type d -exec chmod ugo+rx {} \; \)     \
+  -or \( -type f -exec chmod ugo+r {} \; \)

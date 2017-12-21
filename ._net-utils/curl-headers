@@ -1,0 +1,2 @@
+#!/bin/zsh
+curl -v -o /dev/null "$@" 2>&1 | awk '/^[<>]/{c=substr($0,1,1); if(!done[c]){print "-----";done[c]=1}; print} END{print "-----"}'

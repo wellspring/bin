@@ -1,0 +1,4 @@
+#!/bin/bash
+# Return the UID of the specified user.
+# Usage: uid <username>
+awk -F: "\$1 == \"$1\" { print \$3 }" /etc/passwd

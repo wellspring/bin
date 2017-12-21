@@ -1,0 +1,26 @@
+#!/bin/sh
+# Base tool for search/get/extract/disassemble/decompile/...
+
+action=${1:-help}; shift
+case "$action" in
+  --help|help|h|-h|--usage|usage|u|-u|?|-?)
+    usage "$0 <search|download|>"
+    exit -127
+    ;;
+
+  --search|search|h|-s|--find|find|f|-f|/)
+    ;;
+
+  --get|get|g|-g|--download|download|dl|d|-d)
+    ;;
+
+  --to-jar) ;; #  enjarify com.alibaba.aliexpresshd.apk
+  --extract) ;; # tojar + jar -x
+  --decompile) ;; # tojar + cfr --outputdir com.alibaba.aliexpresshd com.alibaba.aliexpresshd-enjarify.jar
+  --disassemble) ;; 
+  --install) ;; # adb install -r -d "filename.extension"
+  --uninstall) ;; # adb uninstall "filename.extension"
+  --push) ;; # adb push "filename.extension" /sdcard/
+  --emulate) ;; 
+
+esac

@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+# Truncate text with color (e.g. `ls --color=always | truncate 20`) and put in columns if more than one.
+use POSIX;
+
+$maxcharperline = 30;
+$separator = " | ";
+
+# -- Handle arguments...
+if($#ARGV >= 0) {
+  if($ARGV[0] =~ /\A\d+\Z/) {
+    $maxcharperline = $ARGV[0];
+    $separator = $ARGV[1] if $ARGV[1];
+  } else {
+    exec("original truncate @ARGV");
+  }
+}
+
+# -- Compute the number of columns...
+$columns = floor(($ENV{"COLUMNS"} + length($separator)) / ($maxcharperline + length($separator)));
+$line=0;
+
+# -- For each line...
+while (<stdin>)
+{
+  $line++;
+  chomp;
+
+  if(/^(?<header>(\e\[[0-9;]*m)*)
+       (?<txt>[^\e]*?)
+       (?<footer>\e.*?)?
+       (?<indicator>\W)?$/x)
+  {
+    # -- Truncate the text properly (without caring about colors)...
+    $maxchar = $maxcharperline - 3 - length($+{indicator});
+    $len = length($+{txt});
+    $newtxt = $len > $maxchar
+      ? $+{header}.substr($+{txt}, 0, $maxchar).$+{footer}."...".$+{indicator}
+      : $+{header}.$+{txt}.$+{footer}.$+{indicator}.' 'x($maxchar+3-$len);
+
+    # -- Print the new text by column
+    print $newtxt . ($line % $columns == 0 ? "\n" : $separator);
+  }
+  else {
+    print "\e[43;38;5;16m  /\!\\ Internal Error: wrong regexp. Please fix.  \e[0m\n";
+    exit 2;
+  }
+}
+
+print "\n"
+
+# vim: ft=perl

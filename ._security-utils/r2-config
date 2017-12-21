@@ -1,0 +1,2 @@
+#!/bin/sh
+r2 -qc 'ej;e-;evj' - | ruby -rjson -e 'v,c=STDIN.map{|l|JSON(l)}; puts c.map{|h|h["default"]=h["value"]; h["value"]=v[h["name"]]; "#{"#" if h["value"]==h["default"]}e #{h["name"]} = #{h["value"]}\t# #{h["desc"].gsub("\n","")} (default: #{h["default"]}, type: #{h["type"]}#{" -- READ ONLY" if h["ro"]})"}' | align | less

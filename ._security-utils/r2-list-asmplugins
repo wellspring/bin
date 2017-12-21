@@ -1,0 +1,2 @@
+#!/bin/sh
+(echo;underline "Asm plugins: (a=asm, d=disasm, A=analyze, e=ESIL)"|green; echo; rasm2 -L; echo) | less -r

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# -- Set the default title ;D
+notitle='> > >      E N J O Y I N G      S I L E N C E      < < <'
+
+# -- Find out what's the artist/title
+icon=$(playerctl status 2>/dev/null | sed 's/Paused//;s/Playing//;s/...*/[&]/')
+#url=$(playerctl metadata xesam:url 2>/dev/null)
+artist=$(playerctl metadata artist 2>/dev/null)
+title=$(playerctl metadata title 2>/dev/null)
+fulltitle="$artist  —  $title"
+
+if [[ "$title" =~ www\.frequence3\.fr ]]; then
+  fulltitle=$(curl http://hd.stream.frequence3.net/status-json.xsl | ruby -rjson -e 'puts JSON.parse(STDIN.read,quirks_mode:true)["icestats"]["source"][0]["title"].strip.gsub(/\s+-\s+/, "  —  ")' 2>/dev/null)
+fi
+
+# -- Return the title
+[ -n "$title" ] && echo "[[   $icon   $fulltitle.   ]]" || echo "$notitle"
+

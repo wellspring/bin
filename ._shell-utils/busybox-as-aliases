@@ -1,0 +1,3 @@
+#!/bin/sh
+# Outputs alias definitions for busybox (instead of installing it, used on read-only filesystems)
+busybox-tools "$@" | awk '{print "alias "$0"=\"busybox "$0"\""}'

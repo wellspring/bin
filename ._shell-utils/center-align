@@ -1,0 +1,5 @@
+#!/bin/sh
+# Center align the input by columns (by default, separated by spaces or tabs)
+#   Usage: center-align [split-regex] [maxcolumns] [outputseparator] [file]
+#     e.g. center-align '\s' 10
+ruby -e "rows=STDIN.readlines.map{|l|l.split(/(?:${1:-\\s})+/,${2:-0})}; max=rows.map{|columns|columns.map(&:size)}.transpose[0..-2].map{|size|size.max}; rows.each{|columns| puts columns.each_with_index.map{|c,i|c.center(max[i]||0)}.join(\"${3:-  }\") }" $4

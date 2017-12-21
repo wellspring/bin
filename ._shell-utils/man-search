@@ -1,0 +1,8 @@
+#!/bin/sh
+# Manual search + highlight.
+#   Usage: man-search <pattern>
+#     e.g. man-search '^poll '
+#     e.g. man-search '^open '
+man -k "$@" | grep -i "$@"
+
+# ALIASES: man/, /man

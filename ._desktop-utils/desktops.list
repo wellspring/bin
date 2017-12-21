@@ -1,0 +1,4 @@
+#!/bin/sh
+# List desktops
+echo List of desktops: | colorize 0
+wmctrl -d  | ruby -pe '$_.sub!(/^(\d+)\s+(.)\s+(\S+\s+){6}(.*)$/){ "[38;5;#{$2=="*" ? 2 : 198}m- #{$4}[0m" }'

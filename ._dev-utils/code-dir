@@ -1,0 +1,3 @@
+#!/bin/sh
+# Find the directory of the specified project
+find ~/{dev/*,code,reverse/*} -follow -maxdepth 1 -iname "$*" -print -quit

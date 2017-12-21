@@ -1,0 +1,2 @@
+#!/bin/sh
+perl -ple 's/(.*)/\Q\1/'

@@ -1,0 +1,21 @@
+#!/bin/sh
+# Download an APK (android package) from Google Play Store.
+#   Usage: apkget <name> [name ...]
+
+for pkg
+do
+  # Search for the package, and take the first one in the list...
+  echo " [+] Searching for '$pkg' ..."
+  search=$(gplaycli -n 1 -s "$pkg" | awk 'NR==2')
+
+  # Extract informations (id, title/name, version, last update date)...
+  appid=$(echo "$search" | awk -F ' {2,}' '{print $6}')
+  appname=$(echo "$search" | awk -F ' {2,}' '{print $1}')
+  appversion=$(echo "$search" | awk -F ' {2,}' '{print $7}')
+  lastupdate=$(echo "$search" | awk -F ' {2,}' '{print $5}')
+
+  # Download the APK...
+  echo "    > Downloading '$appid' ($appname v$appversion -- last release: $lastupdate) ..."
+  gplaycli -p -d "$appid"
+done
+

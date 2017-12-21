@@ -1,0 +1,3 @@
+#!/bin/sh
+# Open the calculator (GUI) for calculations/conversions.
+qalculate-gtk "$@"

@@ -1,0 +1,11 @@
+#!/bin/sh
+# Create a tiny http-to-https proxy to analyze and log in/out requests easily.
+#   Usage: proxy-https-to <host> [port=443] [localport=8443]
+#     e.g. proxy-https-to www.google.com
+
+remote_host=${1?}
+remote_port=${2:-443}
+local_port=${3:-8443}
+
+socat -v -x -d -d tcp-listen:$local_port,fork openssl:$remote_host:$remote_port,verify=1  2>&1
+

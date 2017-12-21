@@ -1,0 +1,5 @@
+#!/bin/sh
+# An alternative to `command <name>` to escape
+bin=$1; shift; binpath=$(bin "$bin");
+[ -n "$binpath" ] && exec "$binpath" "$@"
+fail "execute \`$(echo "$bin" "$@")\`: no such command '$bin' outside of local/user PATH directories."

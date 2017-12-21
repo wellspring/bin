@@ -1,0 +1,2 @@
+#!/bin/sh
+global -x "$@" | colorize-columns 198 237 237 2

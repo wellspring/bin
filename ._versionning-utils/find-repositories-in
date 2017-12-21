@@ -1,0 +1,13 @@
+#!/bin/sh
+# Find CVS/RCS/SCCS/SVN/Arch/Bazaar/Mercurial/Darcs code versionning repositories
+find "${@:-.}" -type d -name ".git" -prune \
+                   -or -name ".bzr" -prune \
+                   -or -name ".svn" -prune \
+                   -or -name ".CVS" -prune \
+                   -or -name "SCCS" -prune \
+                   -or -name "CVS" -prune \
+                   -or -name "RCS" -prune \
+                   -or -name "_darcs" -prune \
+                   -or -name ".arch-ids" -prune \
+                   -or -name ".hg" -prune \
+               -exec dirname {} \;

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Escape all \ and specified characters (by default, any )
+#   Usage: ... | escape-all [chars]
+#     e.g. ... | escape-all           # escape all \ and any non-[alphanumeric/_/punctuation/unicode]
+#     e.g. ... | escape-all ''        # escape all \
+#     e.g. ... | escape-all '/'       # escape all \ and /
+#     e.g. ... | escape-all '$@#'     # escape all \, $, @, and #
+#     e.g. ... | escape-all '\s'      # escape all \ and whitespaces (space, tab, newline, ...)
+[ $# -eq 0 ] && escapechars='\W' || escapechars=$(echo "$@" | perl -ple 's/([^\w\\])/\Q\1/g')
+perl -ple "s/([${escapechars}\\\\])/\\\\\\1/g"

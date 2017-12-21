@@ -1,0 +1,6 @@
+#!/bin/sh
+# Show various info about the binary ()
+#   Usage: binaryinfo <file...>
+-----
+parallel -k 'file {}; rabin2 -I {}; -----' ::: "$@"
+

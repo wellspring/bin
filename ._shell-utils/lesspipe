@@ -1,0 +1,25 @@
+#!/bin/sh
+# Tool used by less (see: LESSOPEN env variable) to handle how to parse files
+
+file=$(downcase "$1")
+type=$(file -b "$(readlink -f "$1")")
+
+case "$file" in
+  *rc|*.conf|*.cfg|*.ini)   highlight-code "$@"; exit 0;;
+  *.json|*.yaml|*.xml)      highlight-code "$@"; exit 0;;
+  *.md|*.markdown)          pandoc -s -f markdown -t man "$@" | man -l -; exit 0;;
+  *.tar.*|*.tar)            tar tvf "$@"; exit 0;;
+  *.zip|*.apk)              unzip -l "$@"; exit 0;;
+  *.rar)                    unrar l "$@"; exit 0;;
+  *.gz)                     zcat "$@"; exit 0;;
+  *.pdf)                    pdf2txt "$@"; exit 0;;
+esac
+
+case "$type" in
+  ELF*)                     disassemble-with-colors "$@"; exit 0;;   #readelf -aW "$@"; exit 0;;
+  *script*|*source*)        highlight-code "$@"; exit 0;;
+esac
+
+#vimpager "$@"; exit 0
+
+exit 1

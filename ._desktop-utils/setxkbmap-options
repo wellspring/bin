@@ -1,0 +1,3 @@
+#!/bin/sh
+# List options available to use with setxkbmap, also available from `man xkeyboard-config`.
+awk '/^! option/,/^$/' /usr/share/X11/xkb/rules/base.lst | awk '/^!/{next} $1!~/:/{$1="";print "\n"$0;print " ---------------------------"; next} {print}'

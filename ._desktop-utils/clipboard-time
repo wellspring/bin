@@ -1,0 +1,3 @@
+#!/bin/sh
+timestamp=$(xclip -o -selection clipboard -t TIMESTAMP)
+[ "$timestamp" -gt 0 ] && shortdate $timestamp

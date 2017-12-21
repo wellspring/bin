@@ -1,0 +1,4 @@
+#!/bin/bash
+# List vim syntax files
+#   Usage: vim-syntaxes [filter]
+ls {/usr/share/vim/*,~/.vim{/plugged/*,}}/syntax/*.vim | grep --color=none -P ".*/syntax/(${1:-.*})\.vim"

@@ -1,0 +1,4 @@
+#!/bin/sh
+bin=$1
+project=debug_$(basename "$bin")
+r2 -AA -d -w -p "$project" "$bin"

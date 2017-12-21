@@ -1,0 +1,5 @@
+#!/bin/sh
+x=$(sep '/')
+echo -en "\n\e[42;38;5;16m$x$x$x\e[0m\n\n"
+echo -e  "$x"
+echo -en "\n\e[42;38;5;16m$x$x$x\e[0m\n\n"

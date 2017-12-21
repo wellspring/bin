@@ -1,0 +1,19 @@
+#!/bin/sh
+
+disassemble "$@" \
+  | perl -pe '
+      s/^(\s+)([^:]+)(:\s+)(([0-9a-fA-F]{2} )+)(\s+)(\S+)/
+        sprintf "${1}\e[38;5;240m0x%08s\e[0m${3}\e[38;5;235m${4}\e[38;5;238m${6}${7}\t", $2
+      /e' \
+  | colorize-patterns `#labels:`           '<.*>'                                                                 2:235 \
+                      `#RET instructions`  '(?<=\t)(ret|leave)(?=\t)'                                             1     \
+                      `#CALL instructions` '(?<=\t)call(?=\t)'                                                    4:235 \
+                      `#JMP instructions`  '(?<=\t)jmp(?=\t)'                                                     4     \
+                      `#CJMP instructions` '(?<=\t)j\w+(?=\t)'                                                    2     \
+                      `#TEST instructions` '(?<=\t)(test|cmp)(?=\t)'                                              3     \
+                      `#registers:`        '(?<=\W)([er]?([abcd]x|[sd]il?|[bs]p))|(r\d+[dw]?|[abcd][hl])(?=\W)' 245     \
+                      `#numbers:`          '(?<=\W\s)-?\d+'                                                     245     \
+                      `#pointers:`         '\S+ ptr (\S+:)?'                                                    235     \
+                      `#rest`                                                                                   238     \
+  | less
+

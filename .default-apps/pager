@@ -1,4 +1,0 @@
-#!/bin/sh
-# Open the first pager found (or the first editor found if none is found)
-app=$(first 'pager' "$PAGER" slit most less w3m pg vimpager editor)
-[ -n "$app" ] && $app "$@"

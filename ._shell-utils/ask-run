@@ -1,0 +1,5 @@
+#!/bin/sh
+dry-run "$@" \
+  && confirm run this command \
+  && echo "-----" \
+  && "$@"

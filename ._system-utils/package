@@ -1,0 +1,303 @@
+#!/bin/bash
+# Simple cross-platform package manager wrapper.
+#-----
+# pacaur yaourt pacman         # Archlinux based
+# aptitude apt-get slapt-get   # Debian/Ubuntu based (.deb)
+# emerge                       # Gentoo based (.ebuild)
+# brew fink port               # Mac OS X
+# choco                        # Windows
+# zypper                       # SLES/OpenSUSE
+# dnf                          # RedHat/Fedora
+# apt-rpm yast urpmi yum       # OpenSUSE/Mandriva/CentOS/Fedora/RedHat based (.rpm)
+# apk                          # Alpine linux
+# opkg ipkg                    # OpenWrt/OpenMoko based (.ipk)
+# pkg                          # OpenSolaris based
+#-----
+
+action=${1:-help}; shift
+changed_something=-1
+
+# -- Helpers
+has() { type -P "$1" &>/dev/null; }
+die() { echo "Error: $1" >&2; exit 1; }
+error() { die "Command '$action' not supported on this operating system or distribution (package manager found: $packagemanager)"; }
+AS_ROOT() { if [ $EUID -eq 0 ]; then eval "$@"; elif has sudo; then sudo -E "$@"; elif has su; then su --preserve-environment --command "$@"; else echo "Can't run the command '$*' as root: sudo/su not found."; fi; }
+
+# -- Find the package manager...
+for cmd in pacaur yaourt pacman aptitude apt-get slapt-get emerge brew fink port choco zypper dnf apt-rpm yast urpmi yum apk opkg ipkg pkg; do
+  if has $cmd; then
+    packagemanager=$cmd
+    break
+  fi
+done
+
+# -- Handle the first argument (the action verb)...
+case "$action" in
+  --help|help|h|-h)
+    echo "Usage: package install <package-name> [...]   # Install the specified package(s).       "
+    echo "Usage: package reinstall <package-name> [...] # Reinstall the specified package(s).     "
+    echo "Usage: package remove <package-name> [...]    # Remove the specified package(s).        "
+    echo "Usage: package clean                          # Clean the cache.                        "
+    echo "Usage: package search <package-name>          # Search for the specified package.       "
+    echo "Usage: package thathave <cmd>                 # Find which package(s) provide a command."
+    echo "Usage: package thatown <file>                 # Find which package installed that file. "
+    echo "Usage: package depandancies <package-name>    # Show the list of dependancies.          "
+    echo "Usage: package info <package-name>            # Show details about a package.           "
+    echo "Usage: package files <package-name>           # Show files installed by a package.      "
+    echo "Usage: package bin <package-name>             # Show binaries installed by a package.   "
+    echo "Usage: package lib <package-name>             # Show librairies installed by a package. "
+    echo "Usage: package man <package-name>             # Show manuals installed by a package.    "
+    echo "Usage: package installed                      # Show the list of ALL installed packages."
+    echo "Usage: package count                          # Show the number of installed packages.  "
+    echo "Usage: package upgradable                     # Show the number of packages to upgrade. "
+    echo "Usage: package upgrade [pkg]                  # Upgrade ALL the packages installed.     "
+    echo "Usage: package sync                           # Sync package lists.                     "
+    ;;
+
+  --install|install|i|-i)
+    case $packagemanager in
+      guix)                         $packagemanager -i "$@";;
+      pacaur|packer|yaourt)         $packagemanager -S --needed "$@";;
+      pacman)               AS_ROOT $packagemanager -S --needed "$@";;
+      aptitude|apt-get)     AS_ROOT $packagemanager install "$@";;
+      brew|port)            AS_ROOT $packagemanager install "$@";;
+      yum|dnf|zypper)       AS_ROOT $packagemanager install "$@";;
+      fink)                 AS_ROOT $packagemanager -b install "$@";;
+      emerge)               AS_ROOT $packagemanager -av "$@";;
+      yast)                 AS_ROOT $packagemanager -i "$@";;
+      urpmi)                AS_ROOT $packagemanager "$@";;
+      apk)                  AS_ROOT $packagemanager add "$@";;
+      *) error;;
+    esac
+    changed_something=$?
+    ;;
+
+  --reinstall|reinstall|I|-I|-R|R)
+    case $packagemanager in
+      guix)                         $packagemanager -i "$@";;
+      pacaur|yaourt)                $packagemanager -S "$@";;
+      pacman)               AS_ROOT $packagemanager -S "$@";;
+      aptitude|apt-get)     AS_ROOT $packagemanager install --reinstall "$@";;
+      brew)                 AS_ROOT $packagemanager reinstall "$@";;
+      yum|dnf|zypper)       AS_ROOT $packagemanager reinstall "$@";;
+      emerge)               AS_ROOT $packagemanager -av "$@";;
+      *) error;;
+    esac
+    changed_something=$?
+    ;;
+
+  --remove|--delete|--uninstall|remove|delete|uninstall|del|rm|r|d|u|-r|-d|-u)
+    case $packagemanager in
+      guix)                         $packagemanager -r "$@";;
+      pacaur|yaourt)                $packagemanager -Rs "$@";;
+      pacman)               AS_ROOT $packagemanager -Rs "$@";;
+      aptitude|apt-get)     AS_ROOT $packagemanager --purge purge "$@";;
+      yum|dnf|zypper)       AS_ROOT $packagemanager remove "$@";;
+      brew)                 AS_ROOT $packagemanager rm "$@";;
+      fink)                 AS_ROOT $packagemanager purge "$@";;
+      port)                 AS_ROOT $packagemanager uninstall "$@";;
+      emerge)               AS_ROOT $packagemanager --depclean world "$@";;
+      apk)                  AS_ROOT $packagemanager del -r "$@";;
+      urpmi)                AS_ROOT           urpme "$@";;
+      *) error;;
+    esac
+    changed_something=$?
+    ;;
+
+  --clean|--clea*|clea*)
+    case $packagemanager in
+      pacaur|yaourt)                $packagemanager -Scc --noconfirm "$@";;
+      pacman)               AS_ROOT $packagemanager -Scc --noconfirm "$@";;
+      aptitude|apt-get)     AS_ROOT $packagemanager clean -y;;
+      brew)                 AS_ROOT $packagemanager cleanup -s;;
+      apk)                  AS_ROOT $packagemanager cache -v clean;;
+      emerge)               AS_ROOT     eclean-dist -i distfiles "$@";;
+      yum|dnf)              AS_ROOT $packagemanager clean all;;
+      zypper)               AS_ROOT $packagemanager clean;;
+      *) error;;
+    esac
+    ;;
+
+  --search|--find|find|search|s|-s)
+    case $packagemanager in
+      guix)                         $packagemanager -s "$@";;
+      pacaur|yaourt)                $packagemanager -Ss "$@";;
+      pacman)                       $packagemanager -Ss "$@";;
+      aptitude)                     $packagemanager search "$@";;
+      apt-get)                            apt-cache search "$@";;
+      apk)                          $packagemanager search -v "$@";;
+      yum|dnf|zypper)               $packagemanager search "$@";;
+      brew|port)                    $packagemanager search "$@";;
+      fink)                         $packagemanager list "$@";;
+      urpmi)                                  urpmq "$@";;
+      emerge)                                   eix "$@";;         # $packagemanager -S "$@"
+      *) error;;
+    esac
+    ;;
+
+  --that-provide*|--that-ha*|--with|--that-contain*|thatprovide*|thatcontain*|thatha*|provide*|with|t|-t)
+    case $packagemanager in
+      yum|dnf)                      $packagemanager provides "$@";;
+      zypper)                       $packagemanager what-provides "$@";;
+      pacaur|yaourt|pacman)                 pkgfile -b -v "$@";;
+      aptitude|apt-get)                    apt-file search "$@";;
+      emerge)                                e-file "$@";;
+      *) error;;
+    esac
+    ;;
+
+  --that-own*|--who-own*|--belong*|belong*|whoown*|thatown*|o|-o)
+    case $packagemanager in
+      pacaur|yaourt|pacman)         $packagemanager -Qo "$@";;
+      apk)                          $packagemanager info who-owns "$@";;
+      emerge)                                equery belongs -e "$@";;
+      aptitude|apt-get)                        dpkg -S "$@";;
+      yum|urpmi|yast|dnf)                       rpm -qf "$@";;
+      zypper)                       $packagemanager search -f "$@";;
+      *) error;;
+    esac
+    ;;
+
+  --dep*|dep*)
+    case $packagemanager in
+      pacaur|yaourt|pacman)         $packagemanager -Si "$@" | awk -F'[:<=>]' '/^Depends/ {print $2}' | xargs -n1 | sort -u;;
+      aptitude|apt-get)                   apt-cache depends "$@";;
+      emerge)                                equery depgraph "$@";;
+      brew)                         $packagemanager deps "$@";;
+      zypper)                       $packagemanager info --requires "$@";;
+      dnf)                          $packagemanager repoquery --requires "$@";;
+      yum)                                repoquery --requires --resolve "$@";;
+      *) error;;
+    esac
+    ;;
+
+  --show|--info|--query|--what-is|whatis|query|info|show|q|w|-w|-q)
+    case $packagemanager in
+      guix)                         $packagemanager --show "$@";;
+      pacaur|yaourt|pacman)         $packagemanager -Sii "$@";;
+      aptitude)                     $packagemanager show "$@";;
+      apt-get)                            apt-cache show "$@";;
+      apk)                          $packagemanager info -a "$@";;
+      yum|zypper)                   $packagemanager info "$@";;
+      brew|port)                    $packagemanager info "$@";;
+      fink)                         $packagemanager describe "$@";;
+      dnf|urpmi|yast)                           rpm -qi "$@";;
+      emerge)                                   eix "$@";;
+      *) error;;
+    esac
+    ;;
+
+  --file*|--list|list|file*|f|-f)
+    case $packagemanager in
+      pacaur|yaourt|pacman)         $packagemanager -Ql "$@";;
+      port)                         $packagemanager contents "$@";;
+      brew)                         $packagemanager list "$@";;
+      apk)                          $packagemanager info -L "$@";;
+      emerge)                                equery files "$@";;
+      aptitude|apt-get)                        dpkg -L "$@";;
+      yum|urpmi|yast|dnf|zypper)                rpm -ql "$@";;
+      *) error;;
+    esac
+    ;;
+
+  --bin*|--list-bin*|listlib*|bin*|-b)
+    package files "$@" | grep -E --color=never '/s?bin/.'
+    ;;
+
+  --lib*|--list-bin*|listbin*|lib*|-l)
+    package files "$@" | grep -E --color=never '/s?libs?/.'
+    ;;
+
+  --man*|--list-man*|listman*|man*|-m)
+    package files "$@" | grep -E --color=never '/man/.' | grep -v '/$'
+    ;;
+
+  --installed|installed|--list-installed|list-installed)
+    case $packagemanager in
+      pacaur|yaourt|pacman)         $packagemanager -Qet "$@";;
+      yum|dnf)                      $packagemanager list installed "$@";;
+      port)                         $packagemanager installed "$@";;
+      brew)                         $packagemanager list "$@";;
+      apk)                          $packagemanager info "$@";;
+      aptitude|apt-get)                        dpkg --get-selections "$@";;
+      urpmi|yast)                               rpm -qa "$@";;
+      emerge)                       $packagemanager -ep "$@" world;;
+      zypper)                       $packagemanager search --installed-only "$@";;
+      *) error;;
+    esac
+    ;;
+
+  --count|count|c|-c)
+    package installed | wc -l
+    ;;
+
+  --to-update|--check-updates|--upgradable|upgradable|checkupdates|toupdate)
+    case $packagemanager in
+      pacaur|yaourt|pacman)                    echo $(($(checkupdates 2>/dev/null|wc -l)+$(cower -bu 2>/dev/null|wc -l)));;
+      aptitude)                            aptitude search "~U" 2>/dev/null | wc -l;;
+      yum|dnf)                      $packagemanager check-update "$@";;
+      zypper)                       $packagemanager list-updates zypper "$@";;
+      *) error;;
+    esac
+    ;;
+
+  --upgrade|--update|--system-upgrade|--upgrade-everything|upgradeeverything|systemupgrade|upgrade|update|up)
+    case $packagemanager in
+      pacaur|yaourt)                $packagemanager -Syu "$@";;
+      pacman)               AS_ROOT $packagemanager -Syu "$@";;
+      emerge)               AS_ROOT "layman -S;eix-sync;$packagemanager -uavDN world $*";;
+      aptitude|apt-get)     AS_ROOT "$packagemanager update;$packagemanager full-upgrade $*";;
+      brew)                 AS_ROOT "$packagemanager update;$packagemanager upgrade $*";;
+      yum)                  AS_ROOT "$packagemanager update;$packagemanager upgrade $*";;
+      apk)                  AS_ROOT "$packagemanager update;$packagemanager upgrade $*";;
+      dnf)                  AS_ROOT $packagemanager upgrade "$@";;
+      zypper)               AS_ROOT $packagemanager update "$@";;
+      fink)                 AS_ROOT $packagemanager -b update-all "$@";;
+      guix)                 AS_ROOT $packagemanager -u "$@";;
+      *) error;;
+    esac
+    changed_something=$?
+    ;;
+
+  --sync|--refresh|refresh|sync)
+    case $packagemanager in
+      pacaur|yaourt)                $packagemanager -Syy "$@";;
+      pacman)               AS_ROOT $packagemanager -Syy "$@";;
+      emerge)               AS_ROOT "layman -S;eix-sync;$packagemanager --update --newuse --deep @world $*";;
+      aptitude|apt-get)     AS_ROOT $packagemanager update "$@";;
+      brew)                 AS_ROOT $packagemanager update "$@";;
+      apk)                  AS_ROOT $packagemanager update "$@";;
+      yum|dnf|zypper)       AS_ROOT $packagemanager update "$@";;
+      port)                 AS_ROOT $packagemanager selfupdate "$@";;
+      urpmi)                AS_ROOT    urpmi.update -a "$@";;
+      *) error;;
+    esac
+    ;;
+
+  *) error;;
+esac
+
+# If everything went well, clear the packages cache and update the list of executables
+if [[ "$changed_something" -eq 0 ]]; then
+  package --clean-cache
+  hash -r
+fi
+
+
+#-----
+## LIST TODOs: cat .bin/package | sed 's/).*/)/g' | awk -F '[ *|]+' '/^  --/{print $2} /^      [a-z].*)/' | sed 's/)//g; s/|/\n      /g' | awk '/^--/{a=$1} /^ /{actions[a][$1]=1;packagemanagers[$1]=1} END{print "TODO:"; for(pm in packagemanagers){printf " > "pm":  "; for(a in actions){ if(!actions[a][pm]) printf a"  " }; print ""}}' | grep -v ':  $'
+#-----
+# SEE ALSO: alien_package_converter
+#-----
+## TIPS:
+## - To not have to run `packages clean` all the time, mount the folder as tmpfs in /etc/fstab.
+## - To go quicker, lazy people use some aliases... ;)
+# alias packages="package"
+# alias pkg="package"
+# alias i="package install"
+# alias s="package search"
+# alias d="package remove"
+# alias r="package remove"
+# alias u="package remove"
+# alias q="package info"
+# alias up="package systemupgrade"

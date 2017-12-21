@@ -1,3 +1,0 @@
-#!/bin/sh
-# Display the image on the screen (fullscreen)
-qiv -ftuNRi "$@";

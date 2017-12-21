@@ -1,0 +1,12 @@
+#!/bin/sh
+# Debug through QEMU+GDB bridge.
+#   Usage: r2-qemu <arch> <bits> <./binary>
+arch=$1
+bits=$2
+bin=$3
+shift 3
+
+port=1337
+qemu -g "$port" "$bin" "$@" &
+r2 -a "$arch" -b "$bits" -D gdb "gdb://localhost:$port"
+

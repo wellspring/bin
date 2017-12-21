@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# -- Print the prompt and the command name (in green if it exists, in red otherwise)
+prompt=$([[ $UID == 0 || $EUID == 0 ]] && echo -n '#' || echo -n '$')
+cmd="$(has "$1" && green "$1" || red "$1")"
+shift
+
+echo    "WILL EXECUTE:"
+echo -n "  $prompt $cmd"
+
+# -- Print each arguments (with color, and escaped if needed)
+for arg
+do
+  if [[ "$arg" =~ ^[[:digit:]]?[\<\;\&\|\>]+[[:digit:]]?$ ]]; then
+    echo -en " \e[31;48;5;233m$arg\e[0m"
+  elif [[ "$arg" =~ [^-+/%=:,._@^[:alnum:]] ]]; then
+    echo -n " '$arg'" | colorize-patterns '(?<=[^\\])\d+' 1 '\\.' 6 '(?<=\/)\^|\$(?=\/)' 7 '[<;&|>]+' 1:233 3
+  else
+    echo -n " $arg"
+  fi
+done
+echo
+

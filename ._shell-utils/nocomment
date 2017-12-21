@@ -1,0 +1,6 @@
+#!/bin/sh
+# Remove comments and empty lines, whether it's the whole line or at the end of a line (by default '#', but can be passed in argument)
+# Also, it take cares of ignoring colors, and hashbangs (e.g. #!/bin/bash).
+commentchar=${1:-#}
+regexp="\\s*${commentchar}[^\!].*"
+grep -vP "^(\\e\\[[0-9;]*m|\\e\\(.)*($regexp|\\s*)\$" | sed "s/$regexp//"

@@ -1,0 +1,2 @@
+#!/bin/sh
+mplayer http://hd.stream.frequence3.net/frequence3.flac

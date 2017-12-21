@@ -1,0 +1,2 @@
+#!/bin/sh
+#alias | sort | colorize-patterns '^[^=]+' 198 "[~=;\"']+" 7 '\$\([^)]+\)|`[^`]+`' 2:0 '\$\w+' 4 2 | less -r

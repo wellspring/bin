@@ -1,0 +1,5 @@
+#!/bin/sh
+ls -d ~/{dev/*,code,reverse/*,.dotfiles}/*  # same as just echo, but one per line instead of separated by spaces
+
+#---
+#readlink -f ~/{project/dev,code,reverse/*}/* | sort

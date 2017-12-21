@@ -1,0 +1,4 @@
+#!/bin/sh
+# Open the first irc client found.
+app=$(first 'IRC client' weechat-curses bitchx irssi hexchat smuxi kvirc konversation sic ii)
+[ -n "$app" ] && run-in-terminal $app "$@"

@@ -1,2 +1,0 @@
-#!/bin/sh
-urxvtc -title "Task Manager :: htop" -e bash -c  "htop -d 10 -u tigre"

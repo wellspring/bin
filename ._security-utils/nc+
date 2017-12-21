@@ -1,0 +1,36 @@
+#!/bin/bash
+# Connect to the specified host/port by UDP or TCP, and hexdump the input/output. (write to the named pipe)
+#   Usage: nc+ [--tcp|--udp] [host] [port]
+#     e.g. nc+ 192.168.1.1:1234
+#     e.g. nc+ 192.168.1.1 1234
+#     e.g. nc+ --tcp 192.168.1.1 1234
+#     e.g. nc+ udp 192.168.1.1 1234
+#     e.g. PROTOCOL=UDP nc+ 192.168.1.1 1234
+
+INFO_COLOR=240
+SEND_COLOR=2
+RECV_COLOR=198
+
+# -- Handle arguments
+shopt -s nocasematch
+PROTOCOL=${PROTOCOL:-tcp}
+if [[ "$1" =~ (-u|--udp|udp) ]]; then PROTOCOL=udp; shift; fi
+if [[ "$1" =~ (-t|--tcp|tcp) ]]; then PROTOCOL=tcp; shift; fi
+
+CONNECT_TO=${1?missing host/port}; [ -n "$2" ] && CONNECT_TO="${CONNECT_TO}:$2"
+LOG=$(mktemp "connection_${PROTOCOL}_${CONNECT_TO//:/_}_$(timestamp)_XXX.log")
+IN_PIPE="in"
+
+# -- Connect to the specified connection (+ add colors)
+socat -x -v -d -d pipe:"$IN_PIPE",'ignoreeof!!/dev/null' "${PROTOCOL}-connect:${CONNECT_TO}" 2>&1 \
+  | tee "$LOG" \
+  | perl -pe "if(/^\\S/) {
+                \$last = substr(\$_,0,1);
+                s/(opening connection to AF=\\S+ )(\\S+)/\\1\\e[38;5;${RECV_COLOR}m\\2/;
+                s/(named pipe \")([^\"]+)(\" for reading)/\\1\\e[38;5;${SEND_COLOR}m\\2\\e[38;5;${INFO_COLOR}m\\3/;
+                s/^(.*)\$/\\e[38;5;${INFO_COLOR}m *** \\1 \\e[0m/
+              } else {
+                \$color = (\$last eq \">\") ? ${SEND_COLOR} : ${RECV_COLOR};
+                s/^ (.*)\$/\\e[38;5;\${color}m    \$last\$last \\1 \\e[0m/
+              }"
+

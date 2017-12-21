@@ -1,0 +1,3 @@
+#!/bin/sh
+# Alternate version of wget, to download multiple files in parallel (with ncurses interface)
+ncdm -x 1 -X 1 "$@"

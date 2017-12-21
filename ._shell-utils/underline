@@ -1,0 +1,7 @@
+#!/bin/sh
+# echo with ---- underline, for printing markdown titles.
+title=$*
+
+echo "$title"
+repeat - ${#title}
+echo

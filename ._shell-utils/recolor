@@ -1,0 +1,5 @@
+#!/bin/sh
+# Recolor selected lines (remove all color on line + colorize line)
+#   Usage: recolor <regex> [color] [file]
+#     e.g. recolor '^\s*#' 235
+perl -pe "if(/${1?missing regex}/){s/\\e\\[[^m]+m//g;s/(.*)/\\e[38;5;${2:-235}m\\1\\e[0m/g}" $3

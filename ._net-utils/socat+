@@ -1,0 +1,4 @@
+#!/bin/sh
+# e.g. socat+ /var/run/nscd/socket <<< $'\2\0\0\0\r\0\0\0\6\0\0\0hosts\0'
+# e.g. socat+ /var/run/nscd/socket <<< $'\2\0\0\0\16\0\0\0\16\0\0\0www.googe.com\0'
+socat -v -x "$@" - 2>&1 | sed -e 's/^<\(.*\)/\x1b[38;5;235mSEND >>> @\1\x1b[38;5;198m/; s/^>\(.*\)/\x1b[38;5;235mRECV <<< @\1\x1b[38;5;98m/; s/^--$/\x1b[0m&/g'

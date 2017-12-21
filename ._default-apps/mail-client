@@ -1,0 +1,4 @@
+#!/bin/sh
+# Open the first mail client found.
+app=$(first 'mail client' hiri nylas geary trojita thunderbird evolution balsa sylpheed kmail sup nmutt mutt alpine pine)
+[ -n "$app" ] && run $app "$@"

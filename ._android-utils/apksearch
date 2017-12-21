@@ -1,0 +1,13 @@
+#!/bin/sh
+# Search for an APK (android package) on Google Play Store.
+#   Usage: apksearch <name> [name ...]
+
+for pkg
+do
+  # Search for the package, and take the first one in the list...
+  echo "-----"
+  echo " [+] Searching for '$pkg' ..."
+  gplaycli -n 20 -s "$pkg"
+  echo "-----"
+done
+

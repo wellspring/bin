@@ -1,0 +1,3 @@
+#!/bin/sh
+# List files (indented by 2 spaces, separated by commas, and wrapped and justified to exactly 75char/line)
+ls --indicator-style=none -mw73 "$@" | justify | sed 's/^/  /'

@@ -1,0 +1,5 @@
+#!/bin/sh
+# Left align the input by columns (by default, separated by spaces or tabs)
+#   Usage: left-align [split-regex] [maxcolumns] [outputseparator] [file]
+#     e.g. left-align '\s' 10
+ruby -e "rows=STDIN.readlines.map{|l|l.split(/(?:${1:-\s})+/,${2:-0})}; fmt=rows.map{|columns|columns.map(&:size)}.transpose[0..-2].map{|size|\"%-#{size.max}s\"}.join(\"${3:-  }\")+\"${3:-  }%s\"; rows.each{|columns| printf fmt, *columns }" $4
