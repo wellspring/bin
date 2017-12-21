@@ -1,2 +1,2 @@
 #!/bin/sh
-type -P "$1" &>/dev/null;
+which "$1" &>/dev/null
