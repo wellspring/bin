@@ -1,0 +1,4 @@
+#!/bin/sh
+# List scripts in ~/.bin that are incomplete (empty or not +x)
+cd "$(readlink -f $0 | sed -E 's_[^/]+/[^/]+$__')"
+find . -xtype f -path '*._*' \( -not -executable -or -size 0 \) | xargs ls -l | col 1,5,9- | sed 's/ \.\// /; s/\//& /' | sort -k5 -k3 | align.old ' ' | colorize-patterns '.* 0 .*' 1 '^l.*' 237 3

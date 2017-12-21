@@ -1,0 +1,5 @@
+#!/bin/bash
+# Recreate all symlink to the scripts in subcategories of the ~/.bin directory (used to setup/install this repo)
+cd "$(readlink -f "$0" | sed -E 's_[^/]+/[^/]+$__')" || exit 1
+find . -xtype l -delete
+find . -xtype f -executable -path '*._*' -exec ln -fs {} . \;

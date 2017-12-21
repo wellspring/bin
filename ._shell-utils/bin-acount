@@ -1,0 +1,3 @@
+#!/bin/sh
+# Print the number of aliases for custom scripts in ~/.bin
+find "$(readlink -f "$0" | sed -E 's_[^/]+/[^/]+$__')" -type l -xtype f -executable -path '*._*' | wc -l
