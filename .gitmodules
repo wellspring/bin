@@ -1,3 +1,6 @@
-[submodule ".binaries"]
-	path = .binaries
-	url = https://www.github.com/wellspring/bin.binaries.git
+[submodule ".3rdparty"]
+	path = .3rdparty
+	url = https://www.github.com/wellspring/bin.3rdparty.git
+[submodule ".private"]
+	path = .private
+	url = https://private/bin.private

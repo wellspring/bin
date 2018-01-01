@@ -1,0 +1,35 @@
+#!/bin/bash
+
+OUT=/tmp/broken-libs.lst
+
+# -- Find all the broken libs in path...
+find $(path) -maxdepth 1 -type f -executable \
+  | parallel --eta --progress --bar "ldd '{}' 2>/dev/null | awk '/not found\$/{print \$1\" missing in {}\"}'" \
+  > $OUT
+
+# -- Found nothing? then just quit... :)
+if [ "$(wc -l $OUT)" -eq 0 ]; then
+  echo -e '\nNo problem found. :)\n' | green
+  exit 0
+fi
+
+# -- Display results...
+echo
+echo SUMMARY
+echo =======
+echo
+echo ALERT: BROKEN PACKAGES FOUND. | red
+echo
+echo Missing libs:
+awk '{print " - "$1}' /tmp/broken-libs.lst | sort -u
+echo
+echo Broken binaries:
+awk '{print " - "$4}' /tmp/broken-libs.lst | sort -u
+echo
+echo Packages to reinstall:
+awk '{print $4}' /tmp/broken-libs.lst | sort -u | parallel 'package thatown {}' | awk '{print " - "$5}' | sort -u \
+  | tee /tmp/broken-packages.lst
+echo
+echo -e "PLEASE RUN:\\n  $ package reinstall$(awk '{printf " %s",$2}' /tmp/broken-packages.lst)" | yellow
+echo
+

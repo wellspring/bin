@@ -1,2 +1,5 @@
-#!/bin/sh
-open "http://google.se/#q=$*&*"
+#!/bin/bash
+lang=en
+results=100
+url="https://www.google.com/search?q=$(urlencode "$*")&hl=${lang}&lr=lang_${lang}&num=${results}"
+if [[ -t 1 ]] || [[ -z "$DISPLAY" ]]; then elinks "$url"; else open "$url"; fi

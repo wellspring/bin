@@ -1,0 +1,6 @@
+#!/bin/sh
+# List youtube videos on the specified page. (e.g. a playlist)
+#   Usage: youtube-ls <url>
+#     e.g. youtube-ls 'https://www.youtube.com/playlist?list=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+baseurl="https://youtu.be/"  # https://www.youtube.com/watch?v=
+for url; do curl "$url" | grep -o '"videoId":"[^"]*"' | awk -F'"' "{print \"$baseurl\"\$4}" | uniq+; done

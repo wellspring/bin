@@ -279,7 +279,7 @@ esac
 
 # If everything went well, clear the packages cache and update the list of executables
 if [[ "$changed_something" -eq 0 ]]; then
-  package --clean-cache
+  package --clean-cache  &>/dev/null
   hash -r
 fi
 

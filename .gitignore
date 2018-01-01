@@ -1,4 +1,5 @@
 /*
-.private/*
+/.private/*
+!/.3rdparty
 !/README*
 !/._*
